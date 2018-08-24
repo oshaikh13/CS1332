@@ -45,7 +45,6 @@ public class ArrayList<T> {
 
     }
 
-    @Override
     private void resizeBackingArray() {
         resizeBackingArray(backingArray.length * 2);
     }
@@ -199,6 +198,10 @@ public class ArrayList<T> {
      * @return The data from the front of the list or null if the list is empty
      */
     public T removeFromFront() {
+        if (this.isEmpty()) {
+            return null;
+        }
+
         T removedElement = backingArray[0];
         size--;
         shiftFront(0);
@@ -213,7 +216,7 @@ public class ArrayList<T> {
      * @return The data from the back of the list or null if the list is empty
      */
     public T removeFromBack() {
-        if (size <= 0) {
+        if (this.isEmpty()) {
             return null;
         }
 

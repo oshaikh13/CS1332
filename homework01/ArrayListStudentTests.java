@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+
 /**
  * This is a basic set of unit tests for ArrayList. Passing these does
  * NOT guarantee any grade on this assignment. This is only a sanity check to
@@ -296,4 +297,10 @@ public class ArrayListStudentTests {
 
     }
 
+    @Test
+    public void emptyLists () {
+        assertEquals(list.removeFromBack(), null);
+        assertEquals(list.removeFromFront(), null);
+        assertEquals(list.size(), 0);
+    }
 }
