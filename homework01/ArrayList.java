@@ -1,9 +1,8 @@
 /**
  * Your implementation of an ArrayList.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @author Omar Shaikh
+
  * @version 1.0
  */
 public class ArrayList<T> {
@@ -45,6 +44,11 @@ public class ArrayList<T> {
 
     }
 
+    /**
+     * Copies all elements from the current backing array and creates a 
+     * new one of size backingArray.length * 2
+     * .
+     */
     private void resizeBackingArray() {
         resizeBackingArray(backingArray.length * 2);
     }
@@ -101,12 +105,14 @@ public class ArrayList<T> {
     public void addAtIndex(int index, T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data must not be of type null");
+            throw new IllegalArgumentException("Cannot insert data of" 
+                                                + "type null");
         } 
 
         if (index < 0 || index > size) { 
             throw new IndexOutOfBoundsException("The index provided does not " 
-                                                + "fall within the ArrayList");
+                                                + "fall within the ArrayList's "
+                                                + "bounds");
         }
 
         if (++size > backingArray.length) {
