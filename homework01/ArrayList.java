@@ -43,12 +43,17 @@ public class ArrayList<T> {
 
     }
 
-    private void shiftBack(int n) {
+    /**
+     * Moves all elements, from (and including) index i, one position back
+     * 
+     * @param index The index where you want the shifting to start.
+     */
+    private void shiftBack(int index) {
 
-        T current = backingArray[n];
-        backingArray[n] = null;
+        T current = backingArray[index];
+        backingArray[index] = null;
 
-        for (int i = n + 1; i < size; i++) {
+        for (int i = index + 1; i < size; i++) {
             T nextElem = backingArray[i];
             backingArray[i] = current;
             current = nextElem;
@@ -56,9 +61,14 @@ public class ArrayList<T> {
 
     }
 
-    private void shiftFront(int n) {
+    /**
+     * Moves all elements, from (and including) index i, one position up
+     * 
+     * @param index The index where you want the shifting to start.
+     */
+    private void shiftFront(int index) {
         
-        for (int i = n; i < size; i++) {
+        for (int i = index; i < size; i++) {
             backingArray[i] = backingArray[i + 1];
         }
 
@@ -82,12 +92,22 @@ public class ArrayList<T> {
      */
     public void addAtIndex(int index, T data) {
 
-        if (data == null) throw new IllegalArgumentException();
-        if (index < 0 || index > size) throw new IndexOutOfBoundsException();
-        if (++size > backingArray.length) resizeBackingArray();
+        if (data == null) {
+            throw new IllegalArgumentException("Data must not be of type null");
+        } 
 
-        if (backingArray[index] == null) backingArray[index] = data;
-        else {
+        if (index < 0 || index > size) { 
+            throw new IndexOutOfBoundsException("The index provided does not " 
+                                                + "fall within the ArrayList");
+        }
+
+        if (++size > backingArray.length) {
+            resizeBackingArray();
+        }
+
+        if (backingArray[index] == null) {
+            backingArray[index] = data;
+        } else {
             shiftBack(index);
             backingArray[index] = data;
         }
@@ -105,7 +125,9 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addToFront(T data) {
-        if (++size > backingArray.length) resizeBackingArray();
+        if (++size > backingArray.length) {
+            resizeBackingArray();
+        } 
 
         shiftBack(0);
         backingArray[0] = data;
@@ -120,7 +142,15 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addToBack(T data) {
-        if (++size > backingArray.length) resizeBackingArray();
+
+        if (data == null) {
+            throw new IllegalArgumentException("Data must not be of type null");
+        } 
+
+        if (++size > backingArray.length) {
+            resizeBackingArray();
+        }
+        
         backingArray[size - 1] = data;
     }
 
@@ -138,6 +168,12 @@ public class ArrayList<T> {
      * index >= size
      */
     public T removeAtIndex(int index) {
+
+        if (index < 0 || index > size) { 
+            throw new IndexOutOfBoundsException("The index provided does not " 
+                                                + "fall within the ArrayList");
+        }
+
         T removedElement = backingArray[index];
         size--;
         shiftFront(index);
@@ -168,7 +204,9 @@ public class ArrayList<T> {
      * @return The data from the back of the list or null if the list is empty
      */
     public T removeFromBack() {
-        if (size <= 0) return null;
+        if (size <= 0) {
+            return null;
+        }
 
         T lastElement = backingArray[size - 1];
         backingArray[size - 1] = null;
@@ -188,6 +226,10 @@ public class ArrayList<T> {
      * index >= size
      */
     public T get(int index) {
+        if (index < 0 || index > size) { 
+            throw new IndexOutOfBoundsException("The index provided does not " 
+                                                + "fall within the ArrayList");
+        }
         return backingArray[index];
     }
 
