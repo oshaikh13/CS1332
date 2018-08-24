@@ -64,6 +64,8 @@ public class ArrayList<T> {
     /**
      * Moves all elements, from (and including) index i, one position up
      * 
+     * Note that if index = size - 1, then the runtime of this is O(n)
+     * 
      * @param index The index where you want the shifting to start.
      */
     private void shiftFront(int index) {
@@ -150,7 +152,7 @@ public class ArrayList<T> {
         if (++size > backingArray.length) {
             resizeBackingArray();
         }
-        
+
         backingArray[size - 1] = data;
     }
 

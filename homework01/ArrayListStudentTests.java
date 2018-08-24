@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This is a basic set of unit tests for ArrayList. Passing these does
@@ -207,4 +208,92 @@ public class ArrayListStudentTests {
         assertArrayEquals(new Object[ArrayList.INITIAL_CAPACITY],
             list.getBackingArray());
     }
+
+	@Test
+	public void testListInit(){
+		assertTrue(list.isEmpty());
+		assertTrue(list.size() == 0);
+	}
+	
+	
+	@Test
+	public void testAddElements(){
+		list.addAtIndex(0, "Karol");
+		list.addAtIndex(1, "Vanessa");
+		list.addAtIndex(2, "Amanda");
+		
+		assertEquals("Karol", list.get(0));
+		assertEquals("Vanessa", list.get(1));
+		assertEquals("Amanda", list.get(2));
+		
+		list.addAtIndex(1, "Mariana");
+		
+		assertEquals("Karol", list.get(0));
+		assertEquals("Mariana", list.get(1));
+		assertEquals("Vanessa", list.get(2));
+		assertEquals("Amanda", list.get(3));	
+		
+		assertTrue(list.size()==4);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAddElementNull(){
+		list.addAtIndex(0, null);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testSetElementNull(){
+		list.addAtIndex(0, "Kheyla");
+		list.addAtIndex(0, null);
+	}
+	
+	@Test
+	public void testSetElement(){
+		list.addAtIndex(0, "Karol");
+		list.addAtIndex(1, "Vanessa");
+		list.addAtIndex(2, "Amanda");
+		
+		list.addAtIndex(1, "Livia");
+		
+		assertEquals("Karol", list.get(0));
+		assertEquals("Livia", list.get(1));
+		assertEquals("Amanda", list.get(3));
+	}
+	
+	@Test
+	public void testRemoveElement(){
+		list.addAtIndex(0, "Karol");
+		list.addAtIndex(1, "Vanessa");
+		list.addAtIndex(2, "Amanda");
+		
+		assertEquals("Amanda", list.removeAtIndex(2));
+		assertTrue(list.size() == 2);
+	}
+	
+	@Test (expected = IndexOutOfBoundsException.class)
+	public void testRemoveWithEmptyList(){
+		list.removeAtIndex(0);
+    }
+    
+	@Test (expected = IndexOutOfBoundsException.class)
+	public void testRemoveOutOfBounds(){
+		list.removeAtIndex(14);
+    }
+
+    @Test
+    public void doublesCorrectly() {
+
+        for (int i = 0; i < 13; i++) {
+            if (Math.random() > .5)
+                list.addAtIndex(i, i + "");
+            else list.addToBack(i + "");
+        }
+        assertEquals(list.getBackingArray().length, 13);
+
+        list.addToBack(14 + "");
+
+        assertEquals(list.getBackingArray().length, 26);
+
+    }
+
 }
