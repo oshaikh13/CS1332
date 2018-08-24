@@ -80,6 +80,10 @@ public class ArrayListStudentTests {
         expected[1] = "2a";
         expected[2] = "3a";
         expected[3] = "4a";
+        for (int i = 4; i < ArrayList.INITIAL_CAPACITY; i++) {
+            expected[i] = null;
+        }
+        
         assertArrayEquals(expected, list.getBackingArray());
     }
 
@@ -162,6 +166,9 @@ public class ArrayListStudentTests {
         expected[2] = "3a";
         expected[3] = "4a";
         expected[4] = "5a";
+        for (int i = 5; i < ArrayList.INITIAL_CAPACITY; i++) {
+            expected[i] = null;
+        }
         assertArrayEquals(expected, list.getBackingArray());
     }
 
