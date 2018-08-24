@@ -57,12 +57,12 @@ public class ArrayList<T> {
     }
 
     private void shiftFront(int n) {
-
-        for (int i = n; i < size - 1; i++) {
-            backingArray[n] = backingArray[n + 1];
+        
+        for (int i = n; i < size; i++) {
+            backingArray[i] = backingArray[i + 1];
         }
 
-        backingArray[size - 1] = null;
+        backingArray[size] = null;
 
     }
 
@@ -120,7 +120,7 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addToBack(T data) {
-        if (size++ > backingArray.length) resizeBackingArray();
+        if (++size > backingArray.length) resizeBackingArray();
         backingArray[size - 1] = data;
     }
 
@@ -139,8 +139,8 @@ public class ArrayList<T> {
      */
     public T removeAtIndex(int index) {
         T removedElement = backingArray[index];
-        shiftFront(index);
         size--;
+        shiftFront(index);
         return removedElement;
     }
 

@@ -134,6 +134,7 @@ public class ArrayListStudentTests {
         expected[2] = "2a";
         expected[3] = "3a";
         expected[4] = "4a";
+        expected[5] = null;
         assertArrayEquals(expected, list.getBackingArray());
     }
 
