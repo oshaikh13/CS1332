@@ -133,6 +133,11 @@ public class ArrayList<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addToFront(T data) {
+
+        if (data == null) {
+            throw new IllegalArgumentException("Data must not be of type null");
+        } 
+
         if (++size > backingArray.length) {
             resizeBackingArray();
         } 
@@ -177,7 +182,7 @@ public class ArrayList<T> {
      */
     public T removeAtIndex(int index) {
 
-        if (index < 0 || index > size) { 
+        if (index < 0 || index >= size) { 
             throw new IndexOutOfBoundsException("The index provided does not " 
                                                 + "fall within the ArrayList");
         }
@@ -238,7 +243,7 @@ public class ArrayList<T> {
      * index >= size
      */
     public T get(int index) {
-        if (index < 0 || index > size) { 
+        if (index < 0 || index >= size) { 
             throw new IndexOutOfBoundsException("The index provided does not " 
                                                 + "fall within the ArrayList");
         }
