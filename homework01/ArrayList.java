@@ -28,8 +28,12 @@ public class ArrayList<T> {
     }
 
     private void resizeBackingArray() {
+        resizeBackingArray(backingArray.length * 2);
+    }
 
-        T[] tempBackingArray = (T[]) new Object[backingArray.length * 2];
+    private void resizeBackingArray(int newSize) {
+
+        T[] tempBackingArray = (T[]) new Object[newSize];
 
         for (int i = 0; i < backingArray.length; i++) {
             tempBackingArray[i] = backingArray[i];
@@ -78,8 +82,8 @@ public class ArrayList<T> {
      */
     public void addAtIndex(int index, T data) {
 
-        if (data == null) throw new IndexOutOfBoundsException();
-        if (index < 0) throw new IllegalArgumentException();
+        if (data == null) throw new IllegalArgumentException();
+        if (index < 0 || index > size) throw new IndexOutOfBoundsException();
         if (++size > backingArray.length) resizeBackingArray();
 
         if (backingArray[index] == null) backingArray[index] = data;
@@ -117,7 +121,6 @@ public class ArrayList<T> {
      */
     public void addToBack(T data) {
         if (size++ > backingArray.length) resizeBackingArray();
-
         backingArray[size - 1] = data;
     }
 
@@ -137,6 +140,7 @@ public class ArrayList<T> {
     public T removeAtIndex(int index) {
         T removedElement = backingArray[index];
         shiftFront(index);
+        size--;
         return removedElement;
     }
 
@@ -151,6 +155,7 @@ public class ArrayList<T> {
      */
     public T removeFromFront() {
         T removedElement = backingArray[0];
+        size--;
         shiftFront(0);
         return removedElement;
     }
@@ -163,7 +168,6 @@ public class ArrayList<T> {
      * @return The data from the back of the list or null if the list is empty
      */
     public T removeFromBack() {
-
         if (size <= 0) return null;
 
         T lastElement = backingArray[size - 1];
@@ -171,7 +175,6 @@ public class ArrayList<T> {
         size--;
 
         return lastElement;
-
     }
 
     /**
@@ -206,6 +209,7 @@ public class ArrayList<T> {
      * Must be O(1).
      */
     public void clear() {
+        size = 0;
         backingArray = (T[]) new Object[INITIAL_CAPACITY];
     }
 
