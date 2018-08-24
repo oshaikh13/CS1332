@@ -27,10 +27,12 @@ public class ArrayList<T> {
         size = 0;
     }
 
-    private void resizeBackingArray() {
-        resizeBackingArray(backingArray.length * 2);
-    }
-
+    /**
+     * Copies all elements from the current backing array and creates a 
+     * new one of size newSize
+     * 
+     * @param newSize The new size of the backing array.
+     */
     private void resizeBackingArray(int newSize) {
 
         T[] tempBackingArray = (T[]) new Object[newSize];
@@ -41,6 +43,11 @@ public class ArrayList<T> {
 
         backingArray = tempBackingArray;
 
+    }
+
+    @Override
+    private void resizeBackingArray() {
+        resizeBackingArray(backingArray.length * 2);
     }
 
     /**
