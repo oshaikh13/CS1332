@@ -87,8 +87,8 @@ public class DoublyLinkedList<T> {
 
         LinkedListNode currentAtIndex = getNode(index);
         LinkedListNode newNode = new LinkedListNode<T>(currentAtIndex.getPrevious(), data, currentAtIndex);
-        currentAtIndex.setPrevious(newNode);
         currentAtIndex.getPrevious().setNext(newNode);
+        currentAtIndex.setPrevious(newNode);
         size++;
     }
 
@@ -157,6 +157,10 @@ public class DoublyLinkedList<T> {
      */
     public T removeAtIndex(int index) {
 
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("The index does not fall within the linked list");
+        }
+        
         if (index == size - 1) {
             return removeFromBack();
         } else if (index == 0) {
@@ -188,7 +192,7 @@ public class DoublyLinkedList<T> {
 
         if (--size == 0) {
             clear();
-            return oldTail;
+            return oldHead;
         }
 
         head.setPrevious(null);
@@ -262,6 +266,7 @@ public class DoublyLinkedList<T> {
      * index >= size
      */
     public T get(int index) {
+        if (index == size) throw new IndexOutOfBoundsException("The index does not fall within the linked list");
         return getNode(index).getData();
     }
 

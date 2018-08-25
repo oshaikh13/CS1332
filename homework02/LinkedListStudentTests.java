@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import javax.accessibility.AccessibleAttributeSequence;
 
@@ -217,6 +218,13 @@ public class LinkedListStudentTests {
 
         current = current.getNext();
         assertNull(current);
+
+        list.removeAtIndex(1);
+        list.removeAtIndex(1);
+        list.removeAtIndex(1);
+        list.removeAtIndex(1);
+
+        assertEquals(list.getHead(), list.getTail());
     }
 
     @Test(timeout = TIMEOUT)
@@ -301,9 +309,13 @@ public class LinkedListStudentTests {
 
         list.removeFromBack();
         list.removeFromBack();
-        list.removeFromBack();
+        // list.removeFromBack();
 
         assertEquals(list.getHead(), list.getTail());
+        
+        list.removeFromBack();
+        assertEquals(list.getHead(), list.getTail());
+
 
     }
 
@@ -346,6 +358,287 @@ public class LinkedListStudentTests {
 
         Object[] array = list.toArray();
         assertArrayEquals(expectedItems, array);
+    }
+
+	@Test
+	public void testListInit(){
+		assertTrue(list.isEmpty());
+		assertTrue(list.size() == 0);
+	}
+	
+	
+	@Test
+	public void testAddElements(){
+		list.addAtIndex(0, "Karol");
+		list.addAtIndex(1, "Vanessa");
+		list.addAtIndex(2, "Amanda");
+		
+		assertEquals("Karol", list.get(0));
+		assertEquals("Vanessa", list.get(1));
+		assertEquals("Amanda", list.get(2));
+		
+		list.addAtIndex(1, "Mariana");
+		
+		assertEquals("Karol", list.get(0));
+		assertEquals("Mariana", list.get(1));
+		assertEquals("Vanessa", list.get(2));
+		assertEquals("Amanda", list.get(3));	
+		
+		assertTrue(list.size()==4);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testAddElementNull(){
+		list.addAtIndex(0, null);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void testSetElementNull(){
+		list.addAtIndex(0, "Kheyla");
+		list.addAtIndex(0, null);
+	}
+	
+	@Test
+	public void testSetElement(){
+		list.addAtIndex(0, "Karol");
+		list.addAtIndex(1, "Vanessa");
+		list.addAtIndex(2, "Amanda");
+		
+		list.addAtIndex(1, "Livia");
+		
+		assertEquals("Karol", list.get(0));
+		assertEquals("Livia", list.get(1));
+		assertEquals("Amanda", list.get(3));
+	}
+	
+	@Test
+	public void testRemoveElement(){
+		list.addAtIndex(0, "Karol");
+		list.addAtIndex(1, "Vanessa");
+		list.addAtIndex(2, "Amanda");
+		
+		assertEquals("Amanda", list.removeAtIndex(2));
+		assertTrue(list.size() == 2);
+	}
+	
+	@Test (expected = IndexOutOfBoundsException.class)
+	public void testRemoveWithEmptyList(){
+		list.removeAtIndex(0);
+    }
+    
+	@Test (expected = IndexOutOfBoundsException.class)
+	public void testRemoveOutOfBounds(){
+		list.removeAtIndex(14);
+    }
+
+    @Test
+    public void emptyLists () {
+        assertEquals(list.removeFromBack(), null);
+        assertEquals(list.removeFromFront(), null);
+        assertEquals(list.size(), 0);
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testRemoveFromBackEmptyList() {
+        assertEquals(0, list.size());
+
+        Object[] expected = {};
+
+        assertEquals(null, list.removeFromBack());
+
+        assertEquals(0, list.size());
+
+        assertArrayEquals(expected, list.toArray());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testRemoveFromFrontEmptyList() {
+        assertEquals(0, list.size());
+
+        Object[] expected = {};
+
+        assertEquals(null, list.removeFromFront());
+
+        assertEquals(0, list.size());
+
+        assertArrayEquals(expected, list.toArray());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testAddAtIndexIndexOutOfBounds() {
+        try {
+            list.addAtIndex(-1, "Bad Add");
+        } catch (IndexOutOfBoundsException e) {
+            try {
+                list.addAtIndex(list.size() + 1, "Bad Add");
+            } catch (IndexOutOfBoundsException e2) {
+                return;
+            }
+            assertEquals("Throw an IndexOutOfBoundsException on index > size", "Did not throw IndexOutOfBoundsException");
+        }
+        assertEquals("Throw an IndexOutOfBoundsException on index < 0", "Did not throw IndexOutOfBoundsException");
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testAddAtIndexIllegalArgument() {
+        try {
+            list.addAtIndex(0, null);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        assertEquals("Throw an IllegalArgumentException", "Did not throw IllegalArgumentException");
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testAddToFrontIllegalArgument() {
+        try {
+            list.addToFront( null);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        assertEquals("Throw an IllegalArgumentException", "Did not throw IllegalArgumentException");
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testAddToBackIllegalArgument() {
+        try {
+            list.addToBack( null);
+        } catch (IllegalArgumentException e) {
+            return;
+        }
+        assertEquals("Throw an IllegalArgumentException", "Did not throw IllegalArgumentException");
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testRemoveAtIndexIndexOutOfBounds() {
+        
+        try {
+            System.out.println("w e i r d  s h i t");
+            list.removeAtIndex(-1);
+        } catch (IndexOutOfBoundsException e) {
+            try {
+                list.removeAtIndex(list.size());
+            } catch (IndexOutOfBoundsException e2) {
+                return;
+            }
+            assertEquals("Throw an IndexOutOfBoundsException on index >= size", "Did not throw IndexOutOfBoundsException");
+        }
+        assertEquals("Throw an IndexOutOfBoundsException on index < 0", "Did not throw IndexOutOfBoundsException");
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testGetIndexOutOfBounds() {
+        try {
+            list.get(-1);
+        } catch (IndexOutOfBoundsException e) {
+            try {
+                list.get(list.size());
+            } catch (IndexOutOfBoundsException e2) {
+                return;
+            }
+            assertEquals("Throw an IndexOutOfBoundsException on index >= size", "Did not throw IndexOutOfBoundsException");
+        }
+        assertEquals("Throw an IndexOutOfBoundsException on index < 0", "Did not throw IndexOutOfBoundsException");
+    }
+
+    @Test
+    public void testAdd() {
+        list.addAtIndex(0, "b");
+        list.addToBack("c");
+        list.addToBack("e");
+        list.addAtIndex(2, "d");
+        list.addToFront("a");
+        String[] exp = {"a", "b", "c", "d", "e"};
+        for (int i = 0; i < 5; i++) {
+            assertEquals(exp[i], list.get(i));
+        }
+    }
+
+    @Test
+    public void testRemove() {
+        list.addToFront("a");
+        list.addToBack("b");
+        list.addToBack("c");
+        list.addToBack("d");
+        list.addToBack("e");
+        String[] exp = {"a", "e", "d"};
+        String[] act = new String[3];
+        act[0] = list.removeFromFront();
+        act[1] = list.removeFromBack();
+        act[2] = list.removeAtIndex(2);
+        assertArrayEquals(exp, act);
+        list.removeFromFront();
+        assertEquals(list.getHead(), list.getTail());
+        list.removeAtIndex(0);
+        assertEquals(list.getHead(), list.getTail());
+
+    }
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testClear() {
+        for (int i = 0; i < 13; i++) {
+            list.addToBack(Integer.toString(i));
+        }
+        assertFalse(list.isEmpty());
+        list.clear();
+        assertTrue(list.isEmpty());
+        list.get(0);
+    }
+
+    @Test
+    public void testIsEmpty() {
+        assertTrue(list.isEmpty());
+        list.addToBack("a");
+        assertFalse(list.isEmpty());
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testAddIndexGreaterThanSize() {
+        for (int i = 0; i < 13; i++) {
+            list.addToBack(Integer.toString(i));
+        }
+        list.addAtIndex(13 + 1, "a");
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testAddNegativeIndex() {
+        list.addAtIndex(-1, "a");
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testGetIndexGreaterThanSize() {
+        for (int i = 0; i < 13; i++) {
+            list.addToBack(Integer.toString(i));
+        }
+        list.get(13 + 1);
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testGetNegativeIndex() {
+        for (int i = 0; i < 13; i++) {
+            list.addToBack(Integer.toString(i));
+        }
+        list.get(-1);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testNullAdd() {
+        list.addToFront(null);
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testRemoveIndexGreaterThanSize() {
+        for (int i = 0; i < 13; i++) {
+            list.addToBack(Integer.toString(i));
+        }
+        list.removeAtIndex(13 + 1);
+    }
+
+    @Test (expected = IndexOutOfBoundsException.class)
+    public void testRemoveNegativeIndex() {
+        for (int i = 0; i < 13; i++) {
+            list.addToBack(Integer.toString(i));
+        }
+        list.removeAtIndex(-1);
     }
 
  
