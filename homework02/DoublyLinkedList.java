@@ -12,14 +12,30 @@ public class DoublyLinkedList<T> {
     private LinkedListNode<T> tail;
     private int size;
 
-    private void initLinkedList (T data) {
+    /**
+     * Initializes the head and tail references with data
+     * 
+     * @param data the data for the new element
+     */
+    private void initLinkedList(T data) {
         head = new LinkedListNode<T>(null, data, null);
         tail = head;
     }
 
-    private LinkedListNode<T> getNode (int index) {
+    /**
+     * Returns a node object at an index in the linked list
+     * Traverses the linked list from the closer side
+     *
+     * @param index the index of the requested node
+     * @return the node
+     * @throws java.lang.IndexOutOfBoundsException if index is negative or
+     * index > size
+     */
+    private LinkedListNode<T> getNode(int index) {
         if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("The index does not fall within the linked list");
+            throw new 
+                IndexOutOfBoundsException("The index does not fall " 
+                + "within the linked list");
         }
         
         boolean startFromFront = size / 2 < index;
@@ -54,7 +70,8 @@ public class DoublyLinkedList<T> {
 
         }
 
-        throw new IllegalStateException("The linked list references are incorrectly set");
+        throw new IllegalStateException("The linked list references" 
+        + " are incorrectly set");
     }
 
     /**
@@ -72,7 +89,8 @@ public class DoublyLinkedList<T> {
     public void addAtIndex(int index, T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data of type null cannot be inserted");
+            throw new IllegalArgumentException("Data of type null cannot" 
+            + " be inserted");
         }
 
         if (index == 0) {
@@ -86,7 +104,9 @@ public class DoublyLinkedList<T> {
         }
 
         LinkedListNode currentAtIndex = getNode(index);
-        LinkedListNode newNode = new LinkedListNode<T>(currentAtIndex.getPrevious(), data, currentAtIndex);
+        LinkedListNode newNode = 
+            new LinkedListNode<T>(currentAtIndex.getPrevious(), data, 
+                                  currentAtIndex);
         currentAtIndex.getPrevious().setNext(newNode);
         currentAtIndex.setPrevious(newNode);
         size++;
@@ -103,7 +123,8 @@ public class DoublyLinkedList<T> {
     public void addToFront(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data of type null cannot be inserted");
+            throw new IllegalArgumentException("Data of type null cannot" 
+            + " be inserted");
         }
     
         if (size == 0) {
@@ -129,7 +150,8 @@ public class DoublyLinkedList<T> {
     public void addToBack(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data of type null cannot be inserted");
+            throw new IllegalArgumentException("Data of type null cannot" 
+            + " be inserted");
         }
 
         if (size == 0) {
@@ -158,7 +180,9 @@ public class DoublyLinkedList<T> {
     public T removeAtIndex(int index) {
 
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("The index does not fall within the linked list");
+            throw new 
+                IndexOutOfBoundsException("The index does not fall " 
+                + "within the linked list");
         }
         
         if (index == size - 1) {
@@ -184,7 +208,9 @@ public class DoublyLinkedList<T> {
      * @return the data formerly located at the front, null if empty list
      */
     public T removeFromFront() {
-        if (isEmpty()) return null;
+        if (isEmpty()) {
+            return null;
+        }
 
         T oldHead = head.getData();
 
@@ -209,7 +235,9 @@ public class DoublyLinkedList<T> {
      * @return the data formerly located at the back, null if empty list
      */
     public T removeFromBack() {
-        if (isEmpty()) return null;
+        if (isEmpty()) {
+            return null;
+        } 
         
         T oldTail = tail.getData();
 
@@ -237,10 +265,13 @@ public class DoublyLinkedList<T> {
      */
     public int lastOccurrence(T data) {
         if (data == null) {
-            throw new IllegalArgumentException("Data of type null cannot be inserted");
+            throw new IllegalArgumentException("Data of type null cannot" 
+            + " be inserted");
         }
 
-        if (isEmpty()) return -1;
+        if (isEmpty()) {
+            return -1;
+        }
         
         LinkedListNode current = tail;
         int index = size - 1;
@@ -266,7 +297,11 @@ public class DoublyLinkedList<T> {
      * index >= size
      */
     public T get(int index) {
-        if (index == size) throw new IndexOutOfBoundsException("The index does not fall within the linked list");
+        if (index == size) {
+            throw new 
+                IndexOutOfBoundsException("The index does not fall " 
+                + "within the linked list");
+        }
         return getNode(index).getData();
     }
 
@@ -279,7 +314,7 @@ public class DoublyLinkedList<T> {
      * this list in the same order from head to tail
      */
     public Object[] toArray() {
-        Object [] elements = new Object[size];
+        Object[] elements = new Object[size];
         LinkedListNode current = head;
         int index = 0;
         while (current != null) {
@@ -307,7 +342,8 @@ public class DoublyLinkedList<T> {
      * Must be O(1) for all cases.
      */
     public void clear() {
-        head = tail = null;
+        head = null;
+        tail = null;
         size = 0;
     }
 

@@ -513,7 +513,6 @@ public class LinkedListStudentTests {
     public void testRemoveAtIndexIndexOutOfBounds() {
         
         try {
-            System.out.println("w e i r d  s h i t");
             list.removeAtIndex(-1);
         } catch (IndexOutOfBoundsException e) {
             try {
