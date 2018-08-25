@@ -1,6 +1,7 @@
 /**
  * Your implementation of an ArrayList.
- *
+ * @userid oshaikh3
+ * @GTID 903403821
  * @author Omar Shaikh
 
  * @version 1.0
