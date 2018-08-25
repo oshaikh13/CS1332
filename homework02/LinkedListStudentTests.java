@@ -8,6 +8,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import javax.accessibility.AccessibleAttributeSequence;
+
 /**
  * This is a basic set of unit tests for DoublyLinkedList.
  * 
@@ -252,6 +254,13 @@ public class LinkedListStudentTests {
 
         current = current.getNext();
         assertNull(current);
+
+        list.removeFromFront();
+        list.removeFromFront();
+        list.removeFromFront();
+
+        assertEquals(list.getHead(), list.getTail());
+
     }
 
     @Test(timeout = TIMEOUT)
@@ -289,6 +298,13 @@ public class LinkedListStudentTests {
 
         current = current.getNext();
         assertNull(current);
+
+        list.removeFromBack();
+        list.removeFromBack();
+        list.removeFromBack();
+
+        assertEquals(list.getHead(), list.getTail());
+
     }
 
     @Test(timeout = TIMEOUT)
@@ -332,18 +348,5 @@ public class LinkedListStudentTests {
         assertArrayEquals(expectedItems, array);
     }
 
-    @Test(timeout = TIMEOUT)
-    public void testClearIsEmpty() {
-        list.addAtIndex(0, "0a"); // 0a
-        list.addAtIndex(1, "1a"); // 0a 1a
-        list.addAtIndex(2, "2a"); // 0a 1a 2a
-        list.addAtIndex(3, "3a"); // 0a 1a 2a 3a
-        list.addAtIndex(4, "4a"); // 0a 1a 2a 3a 4a
-
-        list.clear();
-        assertEquals(0, list.size());
-        assertNull(list.getHead());
-        assertNull(list.getTail());
-        assertTrue(list.isEmpty());
-    }
+ 
 }

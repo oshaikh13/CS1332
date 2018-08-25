@@ -56,7 +56,7 @@ public class ArrayList<T> {
 
     /**
      * Moves all elements, from (and including) index i, one position back
-     * 
+     *  
      * @param index The index where you want the shifting to start.
      */
     private void shiftBack(int index) {
@@ -75,7 +75,7 @@ public class ArrayList<T> {
     /**
      * Moves all elements, from (and including) index i, one position up
      * 
-     * Note that if index = size - 1, then the runtime of this is O(n)
+     * Note that if index = size - 1, then the runtime of this is O(1)
      * 
      * @param index The index where you want the shifting to start.
      */
@@ -145,12 +145,7 @@ public class ArrayList<T> {
             throw new IllegalArgumentException("Data must not be of type null");
         } 
 
-        if (++size > backingArray.length) {
-            resizeBackingArray();
-        } 
-
-        shiftBack(0);
-        backingArray[0] = data;
+        addAtIndex(0, data);
     }
 
     /**
@@ -167,11 +162,7 @@ public class ArrayList<T> {
             throw new IllegalArgumentException("Data must not be of type null");
         } 
 
-        if (++size > backingArray.length) {
-            resizeBackingArray();
-        }
-
-        backingArray[size - 1] = data;
+        addAtIndex(size, data);
     }
 
     /**
@@ -214,10 +205,7 @@ public class ArrayList<T> {
             return null;
         }
 
-        T removedElement = backingArray[0];
-        size--;
-        shiftFront(0);
-        return removedElement;
+        return removeAtIndex(0);
     }
 
     /**
@@ -232,11 +220,7 @@ public class ArrayList<T> {
             return null;
         }
 
-        T lastElement = backingArray[size - 1];
-        backingArray[size - 1] = null;
-        size--;
-
-        return lastElement;
+        return removeAtIndex(size - 1);
     }
 
     /**

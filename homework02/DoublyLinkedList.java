@@ -185,8 +185,13 @@ public class DoublyLinkedList<T> {
         T oldHead = head.getData();
 
         head = head.getNext();
+
+        if (--size == 0) {
+            clear();
+            return oldTail;
+        }
+
         head.setPrevious(null);
-        size--;
 
         return oldHead;
     }
@@ -205,8 +210,13 @@ public class DoublyLinkedList<T> {
         T oldTail = tail.getData();
 
         tail = tail.getPrevious();
+        
+        if (--size == 0) {
+            clear();
+            return oldTail;
+        }
+
         tail.setNext(null);
-        size--;
         
         return oldTail;
     }
