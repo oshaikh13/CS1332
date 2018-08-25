@@ -12,6 +12,51 @@ public class DoublyLinkedList<T> {
     private LinkedListNode<T> tail;
     private int size;
 
+    private void initLinkedList (T data) {
+        head = new LinkedListNode<T>(null, data, null);
+        tail = head;
+    }
+
+    private LinkedListNode<T> getNode (int index) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("The index does not fall within the linked list");
+        }
+        
+        boolean startFromFront = size / 2 < index;
+        LinkedListNode current;
+        int trackingIndex;
+
+        if (startFromFront) {
+
+            current = head;
+            trackingIndex = 0;
+
+            while (current != null) {
+                if (trackingIndex == index) {
+                    return current;
+                }
+                trackingIndex++;
+                current = current.getNext();
+            }
+
+        } else {
+
+            current = tail;
+            trackingIndex = size - 1;
+
+            while (current != null) {
+                if (trackingIndex == index) {
+                    return current;
+                }
+                trackingIndex--;
+                current = current.getPrevious();
+            }  
+
+        }
+
+        throw new IllegalStateException("The linked list references are incorrectly set");
+    }
+
     /**
      * Adds the element to the index specified.
      *
@@ -26,6 +71,25 @@ public class DoublyLinkedList<T> {
      */
     public void addAtIndex(int index, T data) {
 
+        if (data == null) {
+            throw new IllegalArgumentException("Data of type null cannot be inserted");
+        }
+
+        if (index == 0) {
+            addToFront(data);
+            return;
+        }
+
+        if (index == size) {
+            addToBack(data);
+            return;
+        }
+
+        LinkedListNode currentAtIndex = getNode(index);
+        LinkedListNode newNode = new LinkedListNode<T>(currentAtIndex.getPrevious(), data, currentAtIndex);
+        currentAtIndex.setPrevious(newNode);
+        currentAtIndex.getPrevious().setNext(newNode);
+        size++;
     }
 
     /**
@@ -38,6 +102,20 @@ public class DoublyLinkedList<T> {
      */
     public void addToFront(T data) {
 
+        if (data == null) {
+            throw new IllegalArgumentException("Data of type null cannot be inserted");
+        }
+    
+        if (size == 0) {
+            initLinkedList(data);
+            size++;
+            return;
+        }
+    
+        LinkedListNode newHead = new LinkedListNode<T>(null, data, head);
+        head.setPrevious(newHead);
+        head = newHead;
+        size++;
     }
 
     /**
@@ -50,6 +128,20 @@ public class DoublyLinkedList<T> {
      */
     public void addToBack(T data) {
 
+        if (data == null) {
+            throw new IllegalArgumentException("Data of type null cannot be inserted");
+        }
+
+        if (size == 0) {
+            initLinkedList(data);
+            size++;
+            return;
+        }
+
+        LinkedListNode newTail = new LinkedListNode<T>(tail, data, null);
+        tail.setNext(newTail);
+        tail = newTail;
+        size++;
     }
 
     /**
@@ -65,6 +157,18 @@ public class DoublyLinkedList<T> {
      */
     public T removeAtIndex(int index) {
 
+        if (index == size - 1) {
+            return removeFromBack();
+        } else if (index == 0) {
+            return removeFromFront();
+        }
+
+        LinkedListNode<T> removedNode = getNode(index);
+        T removedData = removedNode.getData();
+        removedNode.getPrevious().setNext(removedNode.getNext());
+        removedNode.getNext().setPrevious(removedNode.getPrevious());
+        size--;
+        return removedData;
     }
 
     /**
@@ -76,7 +180,15 @@ public class DoublyLinkedList<T> {
      * @return the data formerly located at the front, null if empty list
      */
     public T removeFromFront() {
+        if (isEmpty()) return null;
 
+        T oldHead = head.getData();
+
+        head = head.getNext();
+        head.setPrevious(null);
+        size--;
+
+        return oldHead;
     }
 
     /**
@@ -88,7 +200,15 @@ public class DoublyLinkedList<T> {
      * @return the data formerly located at the back, null if empty list
      */
     public T removeFromBack() {
+        if (isEmpty()) return null;
+        
+        T oldTail = tail.getData();
 
+        tail = tail.getPrevious();
+        tail.setNext(null);
+        size--;
+        
+        return oldTail;
     }
 
     /**
@@ -102,7 +222,23 @@ public class DoublyLinkedList<T> {
      * @return the index of the last occurrence or -1 if not in the list
      */
     public int lastOccurrence(T data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Data of type null cannot be inserted");
+        }
 
+        if (isEmpty()) return -1;
+        
+        LinkedListNode current = tail;
+        int index = size - 1;
+        while (current != null) {
+            if (current.getData().equals(data)) {
+                return index;
+            }
+            index--;
+            current = current.getPrevious();
+        }
+
+        return -1;
     }
 
     /**
@@ -116,7 +252,7 @@ public class DoublyLinkedList<T> {
      * index >= size
      */
     public T get(int index) {
-
+        return getNode(index).getData();
     }
 
     /**
@@ -128,7 +264,15 @@ public class DoublyLinkedList<T> {
      * this list in the same order from head to tail
      */
     public Object[] toArray() {
-
+        Object [] elements = new Object[size];
+        LinkedListNode current = head;
+        int index = 0;
+        while (current != null) {
+            elements[index] = current.getData();
+            current = current.getNext();
+            index++;
+        }
+        return elements;
     }
 
     /**
@@ -139,7 +283,7 @@ public class DoublyLinkedList<T> {
      * @return true if empty; false otherwise
      */
     public boolean isEmpty() {
-
+        return size == 0;
     }
 
     /**
@@ -148,7 +292,8 @@ public class DoublyLinkedList<T> {
      * Must be O(1) for all cases.
      */
     public void clear() {
-
+        head = tail = null;
+        size = 0;
     }
 
     /**
