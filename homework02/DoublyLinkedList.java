@@ -18,7 +18,7 @@ public class DoublyLinkedList<T> {
      * @param data the data for the new element
      */
     private void initLinkedList(T data) {
-        head = new LinkedListNode<T>(null, data, null);
+        head = new LinkedListNode<T>(data);
         tail = head;
     }
 
@@ -29,13 +29,16 @@ public class DoublyLinkedList<T> {
      * @param index the index of the requested node
      * @return the node
      * @throws java.lang.IndexOutOfBoundsException if index is negative or
-     * index > size
+     * index >= size
      */
     private LinkedListNode<T> getNode(int index) {
-        if (index < 0 || index > size) {
-            throw new 
-                IndexOutOfBoundsException("The index does not fall " 
-                + "within the linked list");
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("The index provided (" 
+                                                + index + ") does not " 
+                                                + "fall within getNode's "
+                                                + "bounds: " 
+                                                + "[" + 0 + ", " 
+                                                + (size) + ")");   
         }
         
         boolean startFromFront = size / 2 < index;
@@ -179,10 +182,13 @@ public class DoublyLinkedList<T> {
      */
     public T removeAtIndex(int index) {
 
-        if (index < 0 || index >= size) {
-            throw new 
-                IndexOutOfBoundsException("The index does not fall " 
-                + "within the linked list");
+        if (index < 0 || index >= size) { 
+            throw new IndexOutOfBoundsException("The index provided (" 
+                                                + index + ") does not " 
+                                                + "fall within removeAtIndex's "
+                                                + "bounds: " 
+                                                + "[" + 0 + ", " 
+                                                + (size) + ")");
         }
         
         if (index == size - 1) {
@@ -297,11 +303,6 @@ public class DoublyLinkedList<T> {
      * index >= size
      */
     public T get(int index) {
-        if (index == size) {
-            throw new 
-                IndexOutOfBoundsException("The index does not fall " 
-                + "within the linked list");
-        }
         return getNode(index).getData();
     }
 

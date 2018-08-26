@@ -406,6 +406,7 @@ public class ArrayListStudentTests {
             try {
                 list.addAtIndex(list.size() + 1, "Bad Add");
             } catch (IndexOutOfBoundsException e2) {
+                System.out.println(e2);
                 return;
             }
             assertEquals("Throw an IndexOutOfBoundsException on index > size", "Did not throw IndexOutOfBoundsException");
@@ -418,6 +419,7 @@ public class ArrayListStudentTests {
         try {
             list.addAtIndex(0, null);
         } catch (IllegalArgumentException e) {
+            System.out.println(e);
             return;
         }
         assertEquals("Throw an IllegalArgumentException", "Did not throw IllegalArgumentException");
@@ -466,6 +468,7 @@ public class ArrayListStudentTests {
             try {
                 list.get(list.size());
             } catch (IndexOutOfBoundsException e2) {
+                System.out.println(e2);
                 return;
             }
             assertEquals("Throw an IndexOutOfBoundsException on index >= size", "Did not throw IndexOutOfBoundsException");

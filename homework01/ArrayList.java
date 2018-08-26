@@ -107,13 +107,16 @@ public class ArrayList<T> {
 
         if (data == null) {
             throw new IllegalArgumentException("Cannot insert data of" 
-                                                + "type null");
+                                                + " type null into structure");
         } 
 
         if (index < 0 || index > size) { 
-            throw new IndexOutOfBoundsException("The index provided does not " 
-                                                + "fall within the ArrayList's "
-                                                + "bounds");
+            throw new IndexOutOfBoundsException("The index provided (" 
+                                                + index + ") does not " 
+                                                + "fall within addAtIndex's "
+                                                + "bounds: " 
+                                                + "[" + 0 + ", " 
+                                                + (size) + "]");  
         }
 
         if (++size > backingArray.length) {
@@ -142,7 +145,8 @@ public class ArrayList<T> {
     public void addToFront(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data must not be of type null");
+            throw new IllegalArgumentException("Cannot insert data of" 
+                                                + " type null into structure");
         } 
 
         addAtIndex(0, data);
@@ -159,7 +163,8 @@ public class ArrayList<T> {
     public void addToBack(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data must not be of type null");
+            throw new IllegalArgumentException("Cannot insert data of" 
+                                                + " type null into structure");
         } 
 
         addAtIndex(size, data);
@@ -181,8 +186,12 @@ public class ArrayList<T> {
     public T removeAtIndex(int index) {
 
         if (index < 0 || index >= size) { 
-            throw new IndexOutOfBoundsException("The index provided does not " 
-                                                + "fall within the ArrayList");
+            throw new IndexOutOfBoundsException("The index provided (" 
+                                                + index + ") does not " 
+                                                + "fall within removeAtIndex's "
+                                                + "bounds: " 
+                                                + "[" + 0 + ", " 
+                                                + (size) + ")");  
         }
 
         T removedElement = backingArray[index];
@@ -235,8 +244,12 @@ public class ArrayList<T> {
      */
     public T get(int index) {
         if (index < 0 || index >= size) { 
-            throw new IndexOutOfBoundsException("The index provided does not " 
-                                                + "fall within the ArrayList");
+            throw new IndexOutOfBoundsException("The index provided (" 
+                                                + index + ") does not " 
+                                                + "fall within get's "
+                                                + "bounds: " 
+                                                + "[" + 0 + ", " 
+                                                + (size) + ")");  
         }
         return backingArray[index];
     }
