@@ -1,9 +1,9 @@
 /**
  * Your implementation of a non-circular doubly linked list with a tail pointer.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (e.g. gburdell3)
- * @GTID YOUR GT ID HERE (e.g. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class DoublyLinkedList<T> {
@@ -344,7 +344,7 @@ public class DoublyLinkedList<T> {
      */
     public void clear() {
         head = null;
-        tail = null;
+        tail = head;
         size = 0;
     }
 
