@@ -9,6 +9,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+import java.util.Random;
+import java.util.LinkedList;
+
 import javax.accessibility.AccessibleAttributeSequence;
 
 /**
@@ -1178,4 +1181,67 @@ public class LinkedListStudentTests {
       list.lastOccurrence(null);
   }
  
+  @Test(timeout = TIMEOUT)
+  public void testToArray2() {
+      String[] expectedItems = new String[0];
+      Object[] array = list.toArray();
+      assertArrayEquals(expectedItems, array);
+  }
+
+  @Test
+  public void fuzz() {
+      LinkedList<String> oracle = new LinkedList<>();
+      Random rng = new Random();
+      for (int i = 0; i < 10000; i++) {
+          int idx;
+          switch (rng.nextInt(9)) {
+          case 0:
+              idx = rng.nextInt(list.size()+1);
+              list.addAtIndex(idx, ""+i);
+              oracle.add(idx, ""+i);
+              break;
+          case 1:
+              if (!list.isEmpty()) {
+                  idx = rng.nextInt(list.size());
+                  list.removeAtIndex(idx);
+                  oracle.remove(idx);
+              }
+              break;
+          case 2:
+              list.addToFront(""+i);
+              oracle.addFirst(""+i);
+              break;
+          case 3:
+              list.removeFromFront();
+              if (!oracle.isEmpty())
+                  oracle.removeFirst();
+              break;
+          case 4:
+              list.addToBack(""+i);
+              oracle.add(""+i);
+              break;
+          case 5:
+              list.removeFromBack();
+              if (!oracle.isEmpty())
+                  oracle.removeLast();
+              break;
+          case 6:
+              if (!list.isEmpty()) {
+                  idx = rng.nextInt(list.size());
+                  assertEquals(list.get(idx), oracle.get(idx));
+              }
+              break;
+          case 7:
+              String value = ""+rng.nextInt(i+1);
+              assertEquals(list.lastOccurrence(value),
+                      oracle.lastIndexOf(value));
+          case 8:
+              list.clear();
+              oracle.clear();
+          }
+          assertEquals(list.size(), oracle.size());
+          assertArrayEquals(list.toArray(), oracle.toArray());
+      }
+  }
+
 }
