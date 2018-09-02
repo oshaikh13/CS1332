@@ -21,13 +21,29 @@ public class ArrayDeque<T> {
     private int back;
     private int size;
 
-    private void regrowAndCopy () {
+    private void regrowAndCopyLast () {
         T[] tempBacking = (T[]) new Object[backingArray.length * 2];
         for (int i = 0; i < size; i++) {
             tempBacking[i] = backingArray[mod(back + i, backingArray.length)];
         }
+
+        back = mod(size - 2, backingArray.length);
+        front = 0;
+    }
+
+    private void regrowAndCopyFirst () {
+        T[] tempBacking = (T[]) new Object[backingArray.length * 2];
+        for (int i = 1; i < size + 1; i++) {
+            tempBacking[i] = backingArray[mod(back + i, backingArray.length)];
+        }
+
+        back = mod(size - 1, backingArray.length);
+        front = mod(1, backingArray.length);
+    }
+
+    private void resetIndexes () {
+        front = 0;
         back = 0;
-        front = size - 1;
     }
 
     /**
@@ -37,8 +53,7 @@ public class ArrayDeque<T> {
     public ArrayDeque() {
         backingArray = (T[]) new Object[INITIAL_CAPACITY];
         size = 0;
-        front = 0;
-        back = -1;
+        resetIndexes();
     }
 
     /**
@@ -63,10 +78,11 @@ public class ArrayDeque<T> {
         }
 
         if (++size == backingArray.length) {
-            regrowAndCopy();
+            regrowAndCopyFirst();
         }
 
-        backingArray[mod(--front, backingArray.length)] = data;
+        front = mod(front - 1, backingArray.length);
+        backingArray[front] = data;
     }
 
     /**
@@ -90,10 +106,11 @@ public class ArrayDeque<T> {
         }
 
         if (++size == backingArray.length) {
-            regrowAndCopy();
+            regrowAndCopyLast();
         }
 
-        backingArray[mod(++back, backingArray.length)] = data;
+        backingArray[back] = data;
+        back = mod(back + 1, backingArray.length);
     }
 
     /**
@@ -116,9 +133,14 @@ public class ArrayDeque<T> {
         if (size == 0) {
             throw new NoSuchElementException("The deque is empty; no element exists.");
         }
-        T frontData = backingArray[mod(front, backingArray.length)];
-        backingArray[mod(front, backingArray.length)] = null;
-        front++;
+
+        if (front == back) {
+            resetIndexes();
+        }
+
+        T frontData = backingArray[front];
+        backingArray[front] = null;
+        front = mod(front + 1, backingArray.length);
         size--;
         return frontData;
     }
@@ -143,9 +165,15 @@ public class ArrayDeque<T> {
         if (size == 0) {
             throw new NoSuchElementException("The deque is empty; no element exists.");
         }
-        T backData = backingArray[mod(back, backingArray.length)];
-        backingArray[mod(back, backingArray.length)] = null;
-        back--;
+
+        if (front == back) {
+            resetIndexes();
+        }
+
+        back = mod(back - 1, backingArray.length);
+        T backData = backingArray[back];
+        backingArray[back] = null;
+
         size--;
         return backData;
     }
