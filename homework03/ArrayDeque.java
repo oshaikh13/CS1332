@@ -21,24 +21,32 @@ public class ArrayDeque<T> {
     private int back;
     private int size;
 
-    private void regrowAndCopyLast () {
+    private void regrowAndCopyLast (T data) {
         T[] tempBacking = (T[]) new Object[backingArray.length * 2];
-        for (int i = 0; i < size; i++) {
+
+        tempBacking[size - 1] = data;
+
+        for (int i = 0; i < size - 1; i++) {
             tempBacking[i] = backingArray[mod(back + i, backingArray.length)];
         }
 
-        back = mod(size - 2, backingArray.length);
+        back = mod(size, tempBacking.length);
         front = 0;
+
+        backingArray = tempBacking;
     }
 
-    private void regrowAndCopyFirst () {
+    private void regrowAndCopyFirst (T data) {
         T[] tempBacking = (T[]) new Object[backingArray.length * 2];
-        for (int i = 1; i < size + 1; i++) {
-            tempBacking[i] = backingArray[mod(back + i, backingArray.length)];
+        tempBacking[0] = data;
+
+        for (int i = 0; i < size - 1; i++) {
+            tempBacking[i + 1] = backingArray[mod(back + i, backingArray.length)];
         }
 
-        back = mod(size - 1, backingArray.length);
-        front = mod(1, backingArray.length);
+        back = mod(size, tempBacking.length);
+        front = 0;
+        backingArray = tempBacking;
     }
 
     private void resetIndexes () {
@@ -77,8 +85,9 @@ public class ArrayDeque<T> {
             throw new IllegalArgumentException("Data inserted into the deque cannot be null");
         }
 
-        if (++size == backingArray.length) {
-            regrowAndCopyFirst();
+        if (++size > backingArray.length) {
+            regrowAndCopyFirst(data);
+            return;
         }
 
         front = mod(front - 1, backingArray.length);
@@ -105,8 +114,9 @@ public class ArrayDeque<T> {
             throw new IllegalArgumentException("Data inserted into the deque cannot be null");
         }
 
-        if (++size == backingArray.length) {
-            regrowAndCopyLast();
+        if (++size > backingArray.length) {
+            regrowAndCopyLast(data);
+            return;
         }
 
         backingArray[back] = data;
@@ -134,13 +144,14 @@ public class ArrayDeque<T> {
             throw new NoSuchElementException("The deque is empty; no element exists.");
         }
 
+        T frontData = backingArray[front];
+        backingArray[front] = null;
+        front = mod(front + 1, backingArray.length);
+
         if (front == back) {
             resetIndexes();
         }
 
-        T frontData = backingArray[front];
-        backingArray[front] = null;
-        front = mod(front + 1, backingArray.length);
         size--;
         return frontData;
     }
@@ -166,13 +177,13 @@ public class ArrayDeque<T> {
             throw new NoSuchElementException("The deque is empty; no element exists.");
         }
 
-        if (front == back) {
-            resetIndexes();
-        }
-
         back = mod(back - 1, backingArray.length);
         T backData = backingArray[back];
         backingArray[back] = null;
+
+        if (front == back) {
+            resetIndexes();
+        }
 
         size--;
         return backData;

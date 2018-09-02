@@ -34,6 +34,10 @@ public class LinkedDeque<T> {
      */
     public void addFirst(T data) {
 
+        if (data == null) {
+            throw new IllegalArgumentException("Data inserted into the deque cannot be null");
+        }
+
         if (size++ == 0) { 
             initDeque(data);
             return;
@@ -54,6 +58,10 @@ public class LinkedDeque<T> {
      * @throws java.lang.IllegalArgumentException if data is null
      */
     public void addLast(T data) {
+
+        if (data == null) {
+            throw new IllegalArgumentException("Data inserted into the deque cannot be null");
+        }
 
         if (size++ == 0) { 
             initDeque(data);
@@ -78,11 +86,15 @@ public class LinkedDeque<T> {
 
         if (size == 0) {
             throw new NoSuchElementException();
-        } else if (--size == 0) {
+        } 
+        
+        T headData = head.getData();
+
+        if (--size == 0) {
             clearDeque();
+            return headData;
         }
 
-        T headData = head.getData();
         LinkedNode<T> newHead = head.getNext();
         newHead.setPrevious(null);
         head = newHead;
@@ -101,11 +113,15 @@ public class LinkedDeque<T> {
 
         if (size == 0) {
             throw new NoSuchElementException();
-        } else if (--size == 0) {
-            clearDeque();
-        }
+        } 
 
         T tailData = tail.getData();
+
+        if (--size == 0) {
+            clearDeque();
+            return tailData;
+        }
+
         LinkedNode<T> newTail = tail.getPrevious();
         newTail.setNext(null);
         tail = newTail;
