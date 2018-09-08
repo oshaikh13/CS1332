@@ -3,9 +3,9 @@ import java.util.NoSuchElementException;
 /**
  * Your implementation of an array deque.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (e.g. gburdell3)
- * @GTID YOUR GT ID HERE (e.g. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class ArrayDeque<T> {
@@ -21,7 +21,14 @@ public class ArrayDeque<T> {
     private int back;
     private int size;
 
-    private void regrowAndCopyLast (T data) {
+    /**
+     * Copies all elements from the current backing array and creates a 
+     * new one of double the size WHILE inserting the last element.
+     * (Not gonna get me this time :p, o(n))
+     * 
+     * @param data the data to add to the deque
+     */
+    private void regrowAndCopyLast(T data) {
         T[] tempBacking = (T[]) new Object[backingArray.length * 2];
 
         tempBacking[size - 1] = data;
@@ -36,12 +43,19 @@ public class ArrayDeque<T> {
         backingArray = tempBacking;
     }
 
-    private void regrowAndCopyFirst (T data) {
+    /**
+     * Copies all elements from the current backing array and creates a 
+     * new one of double the size WHILE inserting the first element.
+     * 
+     * @param data the data to add to the deque
+     */
+    private void regrowAndCopyFirst(T data) {
         T[] tempBacking = (T[]) new Object[backingArray.length * 2];
         tempBacking[0] = data;
 
         for (int i = 0; i < size - 1; i++) {
-            tempBacking[i + 1] = backingArray[mod(back + i, backingArray.length)];
+            tempBacking[i + 1] = 
+                backingArray[mod(back + i, backingArray.length)];
         }
 
         back = mod(size, tempBacking.length);
@@ -49,7 +63,11 @@ public class ArrayDeque<T> {
         backingArray = tempBacking;
     }
 
-    private void resetIndexes () {
+    /**
+     * Resets the front and back indexes to 0
+     * 
+     */
+    private void resetIndexes() {
         front = 0;
         back = 0;
     }
@@ -82,7 +100,8 @@ public class ArrayDeque<T> {
     public void addFirst(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data inserted into the deque cannot be null");
+            throw new IllegalArgumentException("Data inserted into the deque" 
+            + "cannot be null");
         }
 
         if (++size > backingArray.length) {
@@ -111,7 +130,8 @@ public class ArrayDeque<T> {
     public void addLast(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data inserted into the deque cannot be null");
+            throw new IllegalArgumentException("Data inserted into the"
+            + " deque cannot be null");
         }
 
         if (++size > backingArray.length) {
@@ -141,7 +161,8 @@ public class ArrayDeque<T> {
      */
     public T removeFirst() {
         if (size == 0) {
-            throw new NoSuchElementException("The deque is empty; no element exists.");
+            throw new NoSuchElementException("The deque is empty;"
+            + " no element exists.");
         }
 
         T frontData = backingArray[front];
@@ -174,7 +195,8 @@ public class ArrayDeque<T> {
      */
     public T removeLast() {
         if (size == 0) {
-            throw new NoSuchElementException("The deque is empty; no element exists.");
+            throw new NoSuchElementException("The deque is empty;"
+            + " no element exists.");
         }
 
         back = mod(back - 1, backingArray.length);

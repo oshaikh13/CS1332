@@ -3,9 +3,9 @@ import java.util.NoSuchElementException;
 /**
  * Your implementation of a linked deque.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (e.g. gburdell3)
- * @GTID YOUR GT ID HERE (e.g. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class LinkedDeque<T> {
@@ -14,11 +14,20 @@ public class LinkedDeque<T> {
     private LinkedNode<T> tail;
     private int size;
 
+    /**
+     * Initializes the head and tail references with data
+     * 
+     * @param data the data for the new element
+     */
     private void initDeque(T data) {
         head = new LinkedNode<T>(data);
         tail = head;
     }
 
+    /**
+     * Clears the list of all data and resets the size.
+     *
+     */
     private void clearDeque() {
         head = null;
         tail = head;
@@ -35,7 +44,8 @@ public class LinkedDeque<T> {
     public void addFirst(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data inserted into the deque cannot be null");
+            throw new IllegalArgumentException("Data inserted into the"  
+            + " deque cannot be null");
         }
 
         if (size++ == 0) { 
@@ -60,7 +70,8 @@ public class LinkedDeque<T> {
     public void addLast(T data) {
 
         if (data == null) {
-            throw new IllegalArgumentException("Data inserted into the deque cannot be null");
+            throw new IllegalArgumentException("Data inserted into the deque" 
+            + " cannot be null");
         }
 
         if (size++ == 0) { 

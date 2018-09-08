@@ -6,6 +6,8 @@
  * @author Omar Shaikh
  * @version 1.0
  */
+
+ // 95/100
 public class ArrayList<T> {
 
     // Do not add new instance variables.
