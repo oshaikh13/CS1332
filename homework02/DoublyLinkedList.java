@@ -40,9 +40,12 @@ public class DoublyLinkedList<T> {
                                                 + "[" + 0 + ", " 
                                                 + (size) + ")");   
         }
-        
-        boolean startFromFront = size / 2 < index;
-        LinkedListNode current;
+
+        // these two lines cost me 10 points.
+        // fixed here
+        boolean startFromFront = size / 2 > index; 
+        LinkedListNode<T> current;
+
         int trackingIndex;
 
         if (startFromFront) {

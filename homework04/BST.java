@@ -1,6 +1,9 @@
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Queue;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Your implementation of a binary search tree.
@@ -41,22 +44,6 @@ public class BST<T extends Comparable<? super T>> {
         }
     }
 
-    public void add(BSTNode<T> node, T data) {
-        if (data.compareTo(node.getData()) > 0) {
-            if (node.getRight() == null) {
-                node.setRight(new BSTNode<T>(data));
-            } else {
-                add(node.getRight(), data);
-            }
-        } else if (data.compareTo(node.getData()) < 0) {
-            if (node.getLeft() == null) {
-                node.setLeft(new BSTNode<T>(data));
-            } else {
-                add(node.getLeft(), data);
-            }
-        } else return;
-    }
-
     /**
      * Add the data as a leaf in the BST. Should traverse the tree to find the
      * appropriate location. If the data is already in the tree, then nothing
@@ -73,7 +60,23 @@ public class BST<T extends Comparable<? super T>> {
         size++;
         if (root == null) {
             root = new BSTNode<T>(data);
-        } else add(root, data);
+        } else addHelper(root, data);
+    }
+
+    private void addHelper(BSTNode<T> node, T data) {
+        if (data.compareTo(node.getData()) > 0) {
+            if (node.getRight() == null) {
+                node.setRight(new BSTNode<T>(data));
+            } else {
+                addHelper(node.getRight(), data);
+            }
+        } else if (data.compareTo(node.getData()) < 0) {
+            if (node.getLeft() == null) {
+                node.setLeft(new BSTNode<T>(data));
+            } else {
+                addHelper(node.getLeft(), data);
+            }
+        } else return;
     }
 
     /**
@@ -96,23 +99,52 @@ public class BST<T extends Comparable<? super T>> {
      * that was passed in.  Return the data that was stored in the tree.
      */
     public T remove(T data) {
-        return null;
+        BSTNode<T> dummy = new BSTNode<T>(null);
+        root = removeHelper(root, data, dummy);
+        size--;
+        return dummy.getData();
     }
 
-    public T get(BSTNode<T> node, T data) {
-        if (data.compareTo(node.getData()) > 0) {
-            if (node.getRight() == null) {
-                throw new NoSuchElementException();
+    public BSTNode<T> removeHelper (BSTNode<T> node, T data, BSTNode<T> dummy) {
+        if (node == null) {
+            throw new NoSuchElementException();
+        }
+
+        if (data.compareTo(node.getData()) == 0) {
+            System.out.println(node.getData());
+            dummy.setData(node.getData());
+            // no children
+            if (node.getLeft() == null && node.getRight() == null) {
+                return null;
+            // both children
+            } else if (node.getLeft() != null && node.getRight() != null) {
+                BSTNode<T> tempDummy = new BSTNode<T>(null);
+                node.setRight(successor(node.getRight(), tempDummy));
+                node.setData(tempDummy.getData());
+            // one child
             } else {
-                return get(node.getRight(), data);
+                return node.getRight() == null ? node.getLeft() : node.getRight();
             }
+
+
         } else if (data.compareTo(node.getData()) < 0) {
-            if (node.getLeft() == null) {
-                throw new NoSuchElementException();
-            } else {
-                return get(node.getLeft(), data);
-            }
-        } else return node.getData();
+            node.setLeft(removeHelper(node.getLeft(), data, dummy));
+        } else  {
+            node.setRight(removeHelper(node.getRight(), data, dummy));
+        }
+
+        return node;
+
+    }
+
+    public BSTNode<T> successor (BSTNode<T> node, BSTNode<T> temp) {
+        if (node.getLeft() == null) {
+            temp.setData(node.getData());
+            return node.getRight();
+        } else {
+            node.setLeft(successor(node.getLeft(), temp));
+        }
+        return node;
     }
 
     /**
@@ -132,7 +164,23 @@ public class BST<T extends Comparable<? super T>> {
     public T get(T data) {
         if (root == null) {
             throw new NoSuchElementException();
-        } else return get(root, data);
+        } else return getHelper(root, data);
+    }
+
+    public T getHelper(BSTNode<T> node, T data) {
+        if (data.compareTo(node.getData()) > 0) {
+            if (node.getRight() == null) {
+                throw new NoSuchElementException();
+            } else {
+                return getHelper(node.getRight(), data);
+            }
+        } else if (data.compareTo(node.getData()) < 0) {
+            if (node.getLeft() == null) {
+                throw new NoSuchElementException();
+            } else {
+                return getHelper(node.getLeft(), data);
+            }
+        } else return node.getData();
     }
 
     /**
@@ -149,7 +197,7 @@ public class BST<T extends Comparable<? super T>> {
      */
     public boolean contains(T data) {
         try {
-            BSTNode<T> node = get(data);
+            get(data);
         } catch (NoSuchElementException e) {
             return false;
         }
@@ -162,7 +210,19 @@ public class BST<T extends Comparable<? super T>> {
      * @return a preorder traversal of the tree
      */
     public List<T> preorder() {
-        return null;
+        List<T> list = new ArrayList<T>();
+        return preorderHelper(root, list);
+    }
+
+    public List<T> preorderHelper(BSTNode<T> node, List<T> list) {
+        if (node == null) {
+            return list;
+        } else {
+            list.add(node.getData());
+            preorderHelper(node.getLeft(), list);
+            preorderHelper(node.getRight(), list); 
+        }
+        return list;
     }
 
     /**
@@ -171,7 +231,19 @@ public class BST<T extends Comparable<? super T>> {
      * @return an inorder traversal of the tree
      */
     public List<T> inorder() {
-        return null;
+        List<T> list = new ArrayList<T>();
+        return inorderHelper(root, list);
+    }
+
+    public List<T> inorderHelper(BSTNode<T> node, List<T> list) {
+        if (node == null) {
+            return list;
+        } else {
+            inorderHelper(node.getLeft(), list);
+            list.add(node.getData());
+            inorderHelper(node.getRight(), list); 
+        }
+        return list;
     }
 
     /**
@@ -180,7 +252,19 @@ public class BST<T extends Comparable<? super T>> {
      * @return a postorder traversal of the tree
      */
     public List<T> postorder() {
-        return null;
+        List<T> list = new ArrayList<T>();
+        return postorderHelper(root, list);
+    }
+
+    public List<T> postorderHelper(BSTNode<T> node, List<T> list) {
+        if (node == null) {
+            return list;
+        } else {
+            postorderHelper(node.getLeft(), list);
+            postorderHelper(node.getRight(), list); 
+            list.add(node.getData());
+        }
+        return list;
     }
 
     /**
@@ -196,7 +280,28 @@ public class BST<T extends Comparable<? super T>> {
      * @return a level order traversal of the tree
      */
     public List<T> levelorder() {
-        return null;
+        Queue<BSTNode<T>> nodeQueue = new LinkedList<BSTNode<T>>();
+        List<T> levelOrder = new ArrayList<T>();
+
+        if (size == 0) return levelOrder;
+
+        nodeQueue.add(root);
+        while (!nodeQueue.isEmpty()) {
+
+            BSTNode<T> dequeued = nodeQueue.remove();
+            levelOrder.add(dequeued.getData());
+
+            if (dequeued.getLeft() != null) {
+                nodeQueue.add(dequeued.getLeft());
+            }
+
+            if (dequeued.getRight() != null) {
+                nodeQueue.add(dequeued.getRight());
+            }
+
+        }
+
+        return levelOrder;
     }
 
     /**
@@ -232,7 +337,20 @@ public class BST<T extends Comparable<? super T>> {
      * @return sorted list consisting of the k largest elements
      */
     public List<T> kLargest(int k) {
-        return null;
+        if (k > size) throw new IllegalArgumentException();
+        List<T> kLargest = new LinkedList<T>();
+        kLargestHelper(root, kLargest, k);
+        return kLargest;
+    }
+
+    public void kLargestHelper(BSTNode<T> node, List<T> largestList, int k) {
+
+        if (node == null) { return; }
+        kLargestHelper(node.getRight(), largestList, k);
+        if (largestList.size() == k) { return; }
+        largestList.add(0, node.getData());
+        kLargestHelper(node.getLeft(), largestList, k);
+        
     }
 
     /**
@@ -255,7 +373,27 @@ public class BST<T extends Comparable<? super T>> {
      * @return the height of the root of the tree, -1 if the tree is empty
      */
     public int height() {
-        return null;
+        if (root == null) return -1;
+        return heightHelper(root, 0);
+    }
+
+    public int heightHelper (BSTNode<T> node, int currentHeight) {
+        if (node.getLeft() == null && node.getRight() == null) {
+            return currentHeight;
+        }
+
+        int rightHeight = 0;
+        int leftHeight = 0;
+
+        if (node.getRight() != null) {
+            rightHeight = heightHelper(node.getRight(), currentHeight + 1);
+        }
+
+        if (node.getLeft() != null) {
+            leftHeight = heightHelper(node.getLeft(), currentHeight + 1);
+        }
+
+        return rightHeight > leftHeight ? rightHeight : leftHeight;
     }
 
     /**
