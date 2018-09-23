@@ -8,9 +8,9 @@ import java.util.LinkedList;
 /**
  * Your implementation of a binary search tree.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class BST<T extends Comparable<? super T>> {
@@ -70,10 +70,9 @@ public class BST<T extends Comparable<? super T>> {
             + " BST must not be null");
         }
 
-        size++;
-
         if (root == null) {
             root = new BSTNode<T>(data);
+            size++;
         } else {
             addHelper(root, data);
         } 
@@ -92,12 +91,14 @@ public class BST<T extends Comparable<? super T>> {
         if (data.compareTo(node.getData()) > 0) {
             if (node.getRight() == null) {
                 node.setRight(new BSTNode<T>(data));
+                size++;
             } else {
                 addHelper(node.getRight(), data);
             }
         } else if (data.compareTo(node.getData()) < 0) {
             if (node.getLeft() == null) {
                 node.setLeft(new BSTNode<T>(data));
+                size++;
             } else {
                 addHelper(node.getLeft(), data);
             }
