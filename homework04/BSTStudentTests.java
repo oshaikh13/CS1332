@@ -64,6 +64,11 @@ public class BSTStudentTests {
         assertEquals((Integer) 4, bst.getRoot().getRight().getData());
         assertEquals((Integer) 5, bst.getRoot().getRight()
                 .getRight().getData());
+        try {
+            bst.remove(3);
+        } catch (Exception e) {
+            assertEquals(4, bst.size());
+        }
     }
 
     @Test(timeout = TIMEOUT)

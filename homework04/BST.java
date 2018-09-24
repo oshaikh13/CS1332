@@ -44,10 +44,6 @@ public class BST<T extends Comparable<? super T>> {
             + " be null");
         }
         for (T element : data) {
-            if (element == null) {
-                throw new IllegalArgumentException("Elements in" 
-                + " collection of data must not be null");
-            }
             add(element);
         }
     }
@@ -212,7 +208,7 @@ public class BST<T extends Comparable<? super T>> {
      * tree.
      */
     public T get(T data) {
-        if (root == null) {
+        if (data == null) {
             throw new IllegalArgumentException("Cannot get data of null");
         } else {
             return getHelper(root, data);
@@ -230,18 +226,13 @@ public class BST<T extends Comparable<? super T>> {
      * tree.
      */
     private T getHelper(BSTNode<T> node, T data) {
+        if (node == null) {
+            throw new NoSuchElementException("Node to get was not found!");
+        }
         if (data.compareTo(node.getData()) > 0) {
-            if (node.getRight() == null) {
-                throw new NoSuchElementException("Node to get was not found!");
-            } else {
-                return getHelper(node.getRight(), data);
-            }
+            return getHelper(node.getRight(), data);
         } else if (data.compareTo(node.getData()) < 0) {
-            if (node.getLeft() == null) {
-                throw new NoSuchElementException("Node to get was not found!");
-            } else {
-                return getHelper(node.getLeft(), data);
-            }
+            return getHelper(node.getLeft(), data);
         } else {
             return node.getData();
         }

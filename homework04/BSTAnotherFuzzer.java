@@ -74,6 +74,7 @@ public class BSTAnotherFuzzer {
                 }
                 break;
             case 3:
+                if (bet.size() == 0) break;
                 int k = next() % bet.size();
                 List<Integer> lol = new ArrayList<>(oracle);
                 Collections.sort(lol);
