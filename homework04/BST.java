@@ -428,6 +428,11 @@ public class BST<T extends Comparable<? super T>> {
             throw new IllegalArgumentException("There aren't enough elements " 
                                             + "in the BST. k must be < size.");
         } 
+
+        if (k < 0) {
+            throw new IllegalArgumentException("K must be non-negative.");
+        }
+
         List<T> kLargest = new LinkedList<T>();
         kLargestHelper(root, kLargest, k);
         return kLargest;
