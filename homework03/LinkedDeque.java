@@ -8,6 +8,9 @@ import java.util.NoSuchElementException;
  * @GTID 903403821
  * @version 1.0
  */
+
+// 95/100 - missing exception messages ffs
+
 public class LinkedDeque<T> {
     // Do not add new instance variables and do not add a new constructor.
     private LinkedNode<T> head;
