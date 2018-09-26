@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+
 /**
  * Your implementation of a min heap.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class MinHeap<T extends Comparable<? super T>> {
@@ -23,7 +25,7 @@ public class MinHeap<T extends Comparable<? super T>> {
      * Use the constant field provided. Do not use magic numbers!
      */
     public MinHeap() {
-
+        backingArray = (T[]) new Comparable[INITIAL_CAPACITY]; 
     }
 
     /**
@@ -46,6 +48,33 @@ public class MinHeap<T extends Comparable<? super T>> {
      */
     public MinHeap(ArrayList<T> data) {
 
+        if (data == null) {
+            throw new IllegalArgumentException();
+        }
+
+        backingArray = (T[]) new Comparable[2 * data.size() + 1]; 
+        size = data.size();
+        // copy
+        for (int i = 0; i < data.size(); i++) {
+            T addedElement = data.get(i);
+            if (addedElement == null) {
+                throw new IllegalArgumentException();
+            }
+            backingArray[i + 1] = addedElement;
+        }
+
+        // heapify
+        for (int i = size / 2; i >= 1; i--) {
+            minHeapifyDown(i);
+        }
+    }
+
+    private void resizeBacking () {
+        T[] newBacking = (T[]) new Comparable[backingArray.length * 2];
+        for (int i = 1; i < backingArray.length; i++) {
+            newBacking[i] = backingArray[i];
+        }
+        backingArray = newBacking;
     }
 
     /**
@@ -56,6 +85,14 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @param item the item to be added to the heap
      */
     public void add(T item) {
+        if (item == null) throw new IllegalArgumentException();
+
+        if (++size >= backingArray.length) {
+            resizeBacking();
+        }
+
+        backingArray[size] = item;
+        minHeapifyUp(size);
 
     }
 
@@ -68,7 +105,17 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @return the removed item
      */
     public T remove() {
+        if (size == 0) throw new NoSuchElementException();
 
+        T minElement = getMin();
+
+        swap(1, size);
+        backingArray[size] = null;
+        size--;
+
+
+        minHeapifyDown(1);
+        return minElement;
     }
 
     /**
@@ -77,7 +124,7 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @return the minimum element, null if the heap is empty
      */
     public T getMin() {
-
+        return backingArray[1];
     }
 
     /**
@@ -86,14 +133,67 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @return true if the heap is empty, false otherwise
      */
     public boolean isEmpty() {
-
+        return size == 0;
     }
 
     /**
      * Clears the heap and returns array to {@code INITIAL_CAPACITY}.
      */
     public void clear() {
+        backingArray = (T[]) new Comparable[INITIAL_CAPACITY]; 
+        size = 0;
+    }
 
+    private void minHeapifyUp (int heapifyIdx) {
+        int parent = parent(heapifyIdx);
+        int smallest = heapifyIdx;
+
+        if (parent > 0 && backingArray[parent].compareTo(backingArray[heapifyIdx]) > 0){
+            smallest = parent;
+        };
+
+        if (smallest != heapifyIdx) {
+            swap(heapifyIdx, smallest);
+            minHeapifyUp(smallest);
+        }
+    }
+
+    private void minHeapifyDown (int heapifyIdx) {
+        int leftChild = leftChild(heapifyIdx);
+        int rightChild = rightChild(heapifyIdx);
+
+        int smallest = heapifyIdx;
+
+        if (leftChild <= size && backingArray[heapifyIdx].compareTo(backingArray[leftChild]) > 0){
+            smallest = leftChild;
+        };
+
+        if (rightChild <= size && backingArray[smallest].compareTo(backingArray[rightChild]) > 0){
+            smallest = rightChild;
+        };
+
+        if (smallest != heapifyIdx) {
+            swap(heapifyIdx, smallest);
+            minHeapifyDown(smallest);
+        }
+    }
+
+    private void swap (int idxA, int idxB) {
+        T temp = backingArray[idxA];
+        backingArray[idxA] = backingArray[idxB];
+        backingArray[idxB] = temp;
+    }
+
+    private int parent (int idx) {
+        return idx / 2;
+    }
+
+    private int leftChild (int idx) {
+        return idx * 2;
+    }
+
+    private int rightChild (int idx) {
+        return idx * 2 + 1;
     }
 
     /**
