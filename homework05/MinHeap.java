@@ -9,6 +9,13 @@ import java.util.NoSuchElementException;
  * @GTID 903403821
  * @version 1.0
  */
+
+// Credit: 
+// Introduction to Algorithims, Third Edition.
+// Thomas Cormen, et al
+//
+// Really nice book tbh.
+
 public class MinHeap<T extends Comparable<? super T>> {
 
     public static final int INITIAL_CAPACITY = 13;
@@ -49,7 +56,7 @@ public class MinHeap<T extends Comparable<? super T>> {
     public MinHeap(ArrayList<T> data) {
 
         if (data == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Collection must not be null");
         }
 
         backingArray = (T[]) new Comparable[2 * data.size() + 1]; 
@@ -58,7 +65,8 @@ public class MinHeap<T extends Comparable<? super T>> {
         for (int i = 0; i < data.size(); i++) {
             T addedElement = data.get(i);
             if (addedElement == null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Data in collection " 
+                + "must not be null");
             }
             backingArray[i + 1] = addedElement;
         }
@@ -69,7 +77,11 @@ public class MinHeap<T extends Comparable<? super T>> {
         }
     }
 
-    private void resizeBacking () {
+    /**
+     * Resizes the backing array to double its capacity
+     *
+     */
+    private void resizeBacking() {
         T[] newBacking = (T[]) new Comparable[backingArray.length * 2];
         for (int i = 1; i < backingArray.length; i++) {
             newBacking[i] = backingArray[i];
@@ -85,7 +97,9 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @param item the item to be added to the heap
      */
     public void add(T item) {
-        if (item == null) throw new IllegalArgumentException();
+        if (item == null) {
+            throw new IllegalArgumentException("Data added must not be null");
+        }
 
         if (++size >= backingArray.length) {
             resizeBacking();
@@ -105,7 +119,10 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @return the removed item
      */
     public T remove() {
-        if (size == 0) throw new NoSuchElementException();
+        if (size == 0) {
+            throw new NoSuchElementException("Heap is empty; " 
+            + "no such element exists");
+        }
 
         T minElement = getMin();
 
@@ -124,6 +141,9 @@ public class MinHeap<T extends Comparable<? super T>> {
      * @return the minimum element, null if the heap is empty
      */
     public T getMin() {
+        if (size == 0) {
+            return null;
+        }
         return backingArray[1];
     }
 
@@ -144,13 +164,21 @@ public class MinHeap<T extends Comparable<? super T>> {
         size = 0;
     }
 
-    private void minHeapifyUp (int heapifyIdx) {
+
+    /**
+     * Bubbles an element up the min-heap with respect to its parents
+     * value.
+     *
+     * @param heapifyIdx the item to be 'heapified' up
+     */
+    private void minHeapifyUp(int heapifyIdx) {
         int parent = parent(heapifyIdx);
         int smallest = heapifyIdx;
 
-        if (parent > 0 && backingArray[parent].compareTo(backingArray[heapifyIdx]) > 0){
+        if (parent > 0 
+            && backingArray[parent].compareTo(backingArray[heapifyIdx]) > 0) {
             smallest = parent;
-        };
+        }
 
         if (smallest != heapifyIdx) {
             swap(heapifyIdx, smallest);
@@ -158,19 +186,30 @@ public class MinHeap<T extends Comparable<? super T>> {
         }
     }
 
-    private void minHeapifyDown (int heapifyIdx) {
+
+    /**
+     * Bubbles an element down the min-heap with respect to its childrens'
+     * values.
+     *
+     * @param heapifyIdx the item to be 'heapified' down
+     */
+    private void minHeapifyDown(int heapifyIdx) {
         int leftChild = leftChild(heapifyIdx);
         int rightChild = rightChild(heapifyIdx);
 
         int smallest = heapifyIdx;
 
-        if (leftChild <= size && backingArray[heapifyIdx].compareTo(backingArray[leftChild]) > 0){
+        if (leftChild <= size 
+            && backingArray[heapifyIdx]
+            .compareTo(backingArray[leftChild]) > 0) {
             smallest = leftChild;
-        };
+        }
 
-        if (rightChild <= size && backingArray[smallest].compareTo(backingArray[rightChild]) > 0){
+        if (rightChild <= size 
+            && backingArray[smallest]
+            .compareTo(backingArray[rightChild]) > 0) {
             smallest = rightChild;
-        };
+        }
 
         if (smallest != heapifyIdx) {
             swap(heapifyIdx, smallest);
@@ -178,21 +217,51 @@ public class MinHeap<T extends Comparable<? super T>> {
         }
     }
 
-    private void swap (int idxA, int idxB) {
+    /**
+     * Swaps two nodes in a heap (given their indicies in the 
+     * backing array)
+     * 
+     * @param idxA the index of the node A
+     * @param idxB the index of the node B 
+     */
+    private void swap(int idxA, int idxB) {
         T temp = backingArray[idxA];
         backingArray[idxA] = backingArray[idxB];
         backingArray[idxB] = temp;
     }
 
-    private int parent (int idx) {
+
+    /**
+     * Returns the parent of a specified element in the
+     * heap.
+     * 
+     * @param idx the index of the node
+     * @return the parent of the supplied node
+     */
+    private int parent(int idx) {
         return idx / 2;
     }
 
-    private int leftChild (int idx) {
+    /**
+     * Returns the left child of a specified element in the
+     * heap.
+     * 
+     * @param idx the index of the node
+     * @return the left child of the supplied node
+     */
+    private int leftChild(int idx) {
         return idx * 2;
     }
 
-    private int rightChild (int idx) {
+
+    /**
+     * Returns the right child of a specified element in the
+     * heap.
+     * 
+     * @param idx the index of the node
+     * @return the right child of the supplied node
+     */
+    private int rightChild(int idx) {
         return idx * 2 + 1;
     }
 
