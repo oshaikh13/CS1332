@@ -1,12 +1,15 @@
-import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * Your implementation of HashMap.
  * 
  * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class HashMap<K, V> {
@@ -26,7 +29,7 @@ public class HashMap<K, V> {
      * Use constructor chaining.
      */
     public HashMap() {
-        this.HashMap(this.INITIAL_CAPACITY);
+        this(HashMap.INITIAL_CAPACITY);
     }
 
     /**
@@ -38,7 +41,7 @@ public class HashMap<K, V> {
      * @param initialCapacity initial capacity of the backing array
      */
     public HashMap(int initialCapacity) {
-        this.clear();
+        table = new MapEntry[initialCapacity];
     }
 
     /**
@@ -71,37 +74,44 @@ public class HashMap<K, V> {
      * map, return the old value associated with it
      */
     public V put(K key, V value) {
-        if ((size + 1 / table.length) > HashMap.MAX_LOAD_FACTOR) {
+
+        if (((size + 1) / table.length) > HashMap.MAX_LOAD_FACTOR) {
             this.resizeBackingTable(2 * this.table.length + 1);
         }
 
-        int backingIndex = hash(key);
+        if (key == null) {
+            throw new IllegalArgumentException("Cannot get null key!");
+        }
 
+        return probePut(key, value);
+
+    }
+
+    private V probePut(K key, V value) {
         // linear probing
-
-        for (int i = backingIndex; i != backingIndex - 1; i = i + 1 % table.length) {
-            if (table[backingIndex] == null) {
-                table[backingIndex] = new MapEntry<K, V>(key, value);
+        for (int i = hash(key), j = 0; j < table.length; i = (i + 1) % table.length, j++) {
+            if (table[i] == null) {
+                table[i] = new MapEntry<K, V>(key, value);
                 size++;
                 return null;
             }  
             
-            if (table[backingIndex].isRemoved()) {
-                table[backingIndex].setRemoved(false);
-                table[backingIndex].setKey(key);
-                table[backingIndex].setValue(value);
+            if (table[i].isRemoved()) {
+                table[i].setRemoved(false);
+                table[i].setKey(key);
+                table[i].setValue(value);
                 size++;
                 return null;
             }  
             
-            if (table[backingIndex].getKey().equals(key)) {
-                V oldVal = table[backingIndex].getValue();
-                table[backingIndex].setValue(value);
+            if (table[i].getKey().equals(key)) {
+                V oldVal = table[i].getValue();
+                table[i].setValue(value);
                 return oldVal;
             }
         }
 
-        throw new IllegalStateException("Even after resize, space cannot be found.");
+        throw new IllegalStateException("Space to put cannot be found.");
 
     }
 
@@ -114,7 +124,11 @@ public class HashMap<K, V> {
      * @return the value previously associated with the key
      */
     public V remove(K key) {
-
+        MapEntry<K, V> oldMapEntry = getMapEntry(key);
+        V returnValue = oldMapEntry.getValue();
+        oldMapEntry.setRemoved(true);
+        size--;
+        return returnValue;
     }
 
     /**
@@ -126,7 +140,31 @@ public class HashMap<K, V> {
      * @return the value associated with the given key
      */
     public V get(K key) {
+        return getMapEntry(key).getValue();
+    }
 
+    private MapEntry<K, V> getMapEntry (K key) {
+        // linear probing
+        if (key == null) {
+            throw new IllegalArgumentException("Cannot get null key!");
+        }
+
+        for (int i = hash(key), j = 0; j < table.length; i = (i + 1) % table.length, j++) {
+            if (table[i] == null) {
+                throw new NoSuchElementException("The element cannot be found in the table");
+            }
+
+            if (table[i].isRemoved()) {
+                continue;
+            }
+
+            if (table[i].getKey().equals(key)) {
+                return table[i];
+            }
+
+        }
+
+        throw new NoSuchElementException("The element cannot be found in the table");
     }
 
     /**
@@ -138,6 +176,14 @@ public class HashMap<K, V> {
      */
     public boolean containsKey(K key) {
 
+        try {
+            getMapEntry(key);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+
+        return true;
+
     }
 
     /**
@@ -147,7 +193,24 @@ public class HashMap<K, V> {
      * @return set of keys in this map
      */
     public Set<K> keySet() {
+        Set<K> keys = new HashSet<>();
+        for (int i = 0, j = 0; i < table.length && j < size; i++) {
 
+            if (table[i] == null) {
+                continue;
+            }
+
+            if (table[i].isRemoved()) {
+                continue;
+            }
+
+            j++;
+            keys.add(table[i].getKey());
+
+        }
+
+        return keys;
+        
     }
 
     /**
@@ -161,7 +224,24 @@ public class HashMap<K, V> {
      * @return list of values in this map
      */
     public List<V> values() {
+        List<V> values = new ArrayList<>();
+    
+        for (int i = 0, j = 0; i < table.length && j < size; i++) {
 
+            if (table[i] == null) {
+                continue;
+            }
+
+            if (table[i].isRemoved()) {
+                continue;
+            }
+
+            j++;
+            values.add(table[i].getValue());
+
+        }
+
+        return values;
     }
 
     /**
@@ -186,7 +266,23 @@ public class HashMap<K, V> {
      * items in the hash map
      */
     public void resizeBackingTable(int length) {
+        MapEntry<K, V>[] oldTable = table;
+        table = new MapEntry[length];
 
+        for (int i = 0, j = 0; i < oldTable.length && j < size; i++) {
+
+            if (oldTable[i] == null) {
+                continue;
+            }
+
+            if (oldTable[i].isRemoved()) {
+                continue;
+            }
+
+            j++;
+            this.probePut(oldTable[i].getKey(), oldTable[i].getValue());
+
+        } 
     }
 
     public int hash(K key) {
