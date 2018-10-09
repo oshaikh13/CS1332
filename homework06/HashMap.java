@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 /**
  * Your implementation of HashMap.
  * 
- * @author YOUR NAME HERE
+ * @author Omar Shaikh
  * @userid oshaikh3
  * @GTID 903403821
  * @version 1.0
@@ -87,11 +87,22 @@ public class HashMap<K, V> {
 
     }
 
+
+    /**
+     * Helper probe method for put
+     *
+     * @param key key to add into the HashMap
+     * @param value value to add into the HashMap
+     * @throws IllegalStateException if value cannot be put into table
+     * @return null if the key was not already in the map. If it was in the
+     * map, return the old value associated with it
+     */
     private V probePut(K key, V value) {
         // linear probing
         int removedLocation = -1;
         int nullLocation = -1;
-        for (int i = hash(key), j = 0; j < table.length; i = (i + 1) % table.length, j++) {
+        for (int i = hash(key), j = 0; 
+            j < table.length; i = (i + 1) % table.length, j++) {
             
             if (table[i] == null) {
                 nullLocation = i;
@@ -161,15 +172,25 @@ public class HashMap<K, V> {
         return getMapEntry(key).getValue();
     }
 
-    private MapEntry<K, V> getMapEntry (K key) {
+    /**
+     * Helper that gets the MapEntry associated with the given key.
+     *
+     * @param key the key to search for
+     * @throws IllegalArgumentException if key is null
+     * @throws java.util.NoSuchElementException if the key is not in the map
+     * @return the MapEntry associated with the given key
+     */
+    private MapEntry<K, V> getMapEntry(K key) {
         // linear probing
         if (key == null) {
             throw new IllegalArgumentException("Cannot get null key!");
         }
 
-        for (int i = hash(key), j = 0; j < table.length; i = (i + 1) % table.length, j++) {
+        for (int i = hash(key), j = 0; 
+            j < table.length; i = (i + 1) % table.length, j++) {
             if (table[i] == null) {
-                throw new NoSuchElementException("The element cannot be found in the table");
+                throw new NoSuchElementException("The element cannot" 
+                + " be found in the table");
             }
 
             if (table[i].isRemoved()) {
@@ -182,7 +203,8 @@ public class HashMap<K, V> {
 
         }
 
-        throw new NoSuchElementException("The element cannot be found in the table");
+        throw new NoSuchElementException("The element cannot" 
+        + " be found in the table");
     }
 
     /**
@@ -285,7 +307,8 @@ public class HashMap<K, V> {
      */
     public void resizeBackingTable(int length) {
         if (length < size) {
-            throw new IllegalArgumentException("Length of resize cannot be less than size.");
+            throw new IllegalArgumentException("Length of resize cannot" 
+            + " be less than size.");
         }
 
         MapEntry<K, V>[] oldTable = table;
@@ -307,7 +330,13 @@ public class HashMap<K, V> {
         size = oldSize;
     }
 
-    public int hash(K key) {
+    /**
+     * Returns the hashcode of a key.
+     *
+     * @param key the hashmap key
+     * @return the corresponding hashcode of the key
+     */
+    private int hash(K key) {
         int backingIndex = key.hashCode() % table.length;
         return backingIndex < 0 ? Math.abs(backingIndex) : backingIndex;
     }
