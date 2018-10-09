@@ -75,11 +75,11 @@ public class HashMap<K, V> {
      */
     public V put(K key, V value) {
 
-        if (((size + 1) / table.length) > HashMap.MAX_LOAD_FACTOR) {
+        if ((size + 1) / ((double) table.length) > HashMap.MAX_LOAD_FACTOR) {
             this.resizeBackingTable(2 * this.table.length + 1);
         }
 
-        if (key == null) {
+        if (key == null || value == null) {
             throw new IllegalArgumentException("Cannot get null key!");
         }
 
@@ -89,26 +89,44 @@ public class HashMap<K, V> {
 
     private V probePut(K key, V value) {
         // linear probing
+        int removedLocation = -1;
+        int nullLocation = -1;
         for (int i = hash(key), j = 0; j < table.length; i = (i + 1) % table.length, j++) {
+            
             if (table[i] == null) {
-                table[i] = new MapEntry<K, V>(key, value);
-                size++;
-                return null;
+                nullLocation = i;
+                break;
             }  
             
-            if (table[i].isRemoved()) {
-                table[i].setRemoved(false);
-                table[i].setKey(key);
-                table[i].setValue(value);
-                size++;
-                return null;
+            if (table[i].isRemoved() && removedLocation == -1) {
+                removedLocation = i;
             }  
             
             if (table[i].getKey().equals(key)) {
                 V oldVal = table[i].getValue();
                 table[i].setValue(value);
+                if (table[i].isRemoved()) {
+                    table[i].setRemoved(false);
+                    size++;
+                    return value;
+                }
                 return oldVal;
             }
+            
+        }
+
+        if (removedLocation != -1) {
+            table[removedLocation].setRemoved(false);
+            table[removedLocation].setKey(key);
+            table[removedLocation].setValue(value);
+            size++;
+            return null;
+        }
+
+        if (nullLocation != -1) {
+            table[nullLocation] = new MapEntry<K, V>(key, value);
+            size++;
+            return null;
         }
 
         throw new IllegalStateException("Space to put cannot be found.");
@@ -266,10 +284,14 @@ public class HashMap<K, V> {
      * items in the hash map
      */
     public void resizeBackingTable(int length) {
+        if (length < size) {
+            throw new IllegalArgumentException("Length of resize cannot be less than size.");
+        }
+
         MapEntry<K, V>[] oldTable = table;
         table = new MapEntry[length];
-
-        for (int i = 0, j = 0; i < oldTable.length && j < size; i++) {
+        int oldSize = size;
+        for (int i = 0, j = 0; i < oldTable.length && j < oldSize; i++) {
 
             if (oldTable[i] == null) {
                 continue;
@@ -281,8 +303,8 @@ public class HashMap<K, V> {
 
             j++;
             this.probePut(oldTable[i].getKey(), oldTable[i].getValue());
-
         } 
+        size = oldSize;
     }
 
     public int hash(K key) {
