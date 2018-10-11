@@ -1,5 +1,7 @@
 import java.util.Collection;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * Your implementation of an AVL Tree.
  *
@@ -34,7 +36,13 @@ public class AVL<T extends Comparable<? super T>> {
      * @throws IllegalArgumentException if data or any element in data is null
      */
     public AVL(Collection<T> data) {
-
+        if (data == null) {
+            throw new IllegalArgumentException("Collection of data cannot" 
+            + " be null");
+        }
+        for (T element : data) {
+            add(element);
+        }
     }
 
     /**
@@ -50,7 +58,44 @@ public class AVL<T extends Comparable<? super T>> {
      * @param data the data to be added
      */
     public void add(T data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Data to add to" 
+            + " BST must not be null");
+        }
 
+        if (root == null) {
+            root = new AVLNode<T>(data);
+            size++;
+        } else {
+            addHelper(root, data);
+        } 
+    }
+
+
+    /**
+     * Helper method to add data to a leaf in a BST. Does all the recursive 
+     * hard work. Compares a node, and picks a path to go down, then, it 
+     * adds the node to the correct position.
+     *
+     * @param node the node to start the add process from
+     * @param data the data to be added
+     */
+    private void addHelper(AVLNode<T> node, T data) {
+        if (data.compareTo(node.getData()) > 0) {
+            if (node.getRight() == null) {
+                node.setRight(new AVLNode<T>(data));
+                size++;
+            } else {
+                addHelper(node.getRight(), data);
+            }
+        } else if (data.compareTo(node.getData()) < 0) {
+            if (node.getLeft() == null) {
+                node.setLeft(new AVLNode<T>(data));
+                size++;
+            } else {
+                addHelper(node.getLeft(), data);
+            }
+        }
     }
 
     /**
@@ -74,7 +119,74 @@ public class AVL<T extends Comparable<? super T>> {
      * that was passed in.  Return the data that was stored in the tree.
      */
     public T remove(T data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Data removed cannot be null");
+        }
+        AVLNode<T> dummy = new AVLNode<T>(null);
+        root = removeHelper(root, data, dummy);
+        size--;
+        return dummy.getData();
+    }
 
+    /**
+     * Helper method to remove the data from the tree. Uses pointer re-
+     * inforcement to avoid edge cases.
+     *  
+     * @throws java.util.NoSuchElementException if the data is not found
+     * @param node the head of the subtree to search & remove from.
+     * @param data the data to remove from the tree.
+     * @param dummy a dummy node to store removed data in
+     * @return the node removed from the tree
+     */
+    private AVLNode<T> removeHelper(AVLNode<T> node, T data, AVLNode<T> dummy) {
+        if (node == null) {
+            throw new NoSuchElementException("Node to remove was not found!");
+        }
+
+        if (data.compareTo(node.getData()) == 0) {
+            dummy.setData(node.getData());
+            // no children
+            if (node.getLeft() == null && node.getRight() == null) {
+                return null;
+            // both children
+            } else if (node.getLeft() != null && node.getRight() != null) {
+                AVLNode<T> tempDummy = new AVLNode<T>(null);
+                node.setRight(successor(node.getRight(), tempDummy));
+                node.setData(tempDummy.getData());
+            // one child
+            } else {
+                return 
+                    node.getRight() == null ? node.getLeft() : node.getRight();
+            }
+
+
+        } else if (data.compareTo(node.getData()) < 0) {
+            node.setLeft(removeHelper(node.getLeft(), data, dummy));
+        } else  {
+            node.setRight(removeHelper(node.getRight(), data, dummy));
+        }
+
+        return node;
+
+    }
+
+    /**
+     * Helper for node remove helper. Find a successor by looking at the 
+     * left-most node that's a leaf. Then, it returns the reference to
+     * the right child to "re-attach" it
+     * 
+     * @param node the head of the subtree to find a successor from
+     * @param temp a node to successor data in
+     * @return the node that replaces the successors position
+     */
+    private AVLNode<T> successor(AVLNode<T> node, AVLNode<T> temp) {
+        if (node.getLeft() == null) {
+            temp.setData(node.getData());
+            return node.getRight();
+        } else {
+            node.setLeft(successor(node.getLeft(), temp));
+        }
+        return node;
     }
 
     /**
@@ -89,7 +201,34 @@ public class AVL<T extends Comparable<? super T>> {
      * tree.
      */
     public T get(T data) {
+        if (data == null) {
+            throw new IllegalArgumentException("Cannot get data of null");
+        } else {
+            return getHelper(root, data);
+        } 
+    }
 
+    /**
+     * Helper method for 'get.' Picks subtree by comparing nodes, recursively.
+     *
+     * @throws java.util.NoSuchElementException if the data is not found
+     * @param node the node of the subtree to search from.
+     * @param data the data to search for in the tree.
+     * @return the data in the tree equal to the parameter. Do not return the
+     * same data that was passed in.  Return the data that was stored in the
+     * tree.
+     */
+    private T getHelper(AVLNode<T> node, T data) {
+        if (node == null) {
+            throw new NoSuchElementException("Node to get was not found!");
+        }
+        if (data.compareTo(node.getData()) > 0) {
+            return getHelper(node.getRight(), data);
+        } else if (data.compareTo(node.getData()) < 0) {
+            return getHelper(node.getLeft(), data);
+        } else {
+            return node.getData();
+        }
     }
 
     /**
@@ -102,7 +241,12 @@ public class AVL<T extends Comparable<? super T>> {
      * @return whether or not the parameter is contained within the tree.
      */
     public boolean contains(T data) {
-
+        try {
+            get(data);
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -135,7 +279,7 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the data in the maximum deepest node or null if the tree is empty
      */
     public T maxDeepestNode() {
-
+        throw new NotImplementedException();
     }
 
     /**
@@ -175,14 +319,15 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the data of the deepest common ancestor
      */
     public T deepestCommonAncestor(T data1, T data2) {
-
+        throw new NotImplementedException();
     }
 
     /**
      * Clear the tree.
      */
     public void clear() {
-
+        root = null;
+        size = 0;
     }
 
     /**
@@ -194,7 +339,7 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the height of the root of the tree, -1 if the tree is empty
      */
     public int height() {
-
+        return root.getHeight();
     }
 
     /**
