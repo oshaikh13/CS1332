@@ -156,6 +156,10 @@ public class AVLStudentTests {
 
     @Test(timeout = TIMEOUT)
     public void testHeight() {
+        System.out.println("WTAF");
+        System.out.println("WTAF");
+        System.out.println("WTAF");
+
         /*
                     646
                    /   \
@@ -163,13 +167,47 @@ public class AVLStudentTests {
                  / \
                526 477
          */
+        System.out.println("ADD SESH");
         avlTree.add(646);
+
+        System.out.println("ADD SESH");
         avlTree.add(386);
+
+        System.out.println("ADD SESH");
         avlTree.add(856);
+
+        System.out.println("ADD SESH");
         avlTree.add(526);
+
+        System.out.println("ADD SESH");
         avlTree.add(477);
 
+        System.out.println("WTAF");
+        System.out.println("WTAF");
+        System.out.println("WTAF");
+
         assertEquals(2, avlTree.height());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testHeight2() {
+
+
+        /*
+                    646
+                   /   \
+                 386   856
+                 / \
+               526 477
+         */
+        System.out.println("ADD SESH");
+        avlTree.add(646);
+        avlTree.add(856);
+
+
+        assertEquals(1, avlTree.height());
+        // assertEquals(0, avlTree.getRoot().getRight());
+
     }
 
     @Test(timeout = TIMEOUT)
