@@ -148,38 +148,60 @@ public class AVL<T extends Comparable<? super T>> {
      * @param dummy a dummy node to store removed data in
      * @return the node removed from the tree
      */
-    private AVLNode<T> removeHelper(AVLNode<T> node, T data, AVLNode<T> dummy) {
-        if (node == null) {
-            throw new NoSuchElementException("Node to remove was not found!");
-        }
+    private AVLNode<T> removeHelper(AVLNode<T> tempnode, T data, AVLNode<T> lul) {
+        AVLNode<T> none = new AVLNode<T>(null);
+        if (tempnode == null) {
+            throw new java.util.NoSuchElementException("data not found!");
+        } else if (data.compareTo(tempnode.getData()) < 0) {
+            tempnode.setLeft(removeHelper(tempnode.getLeft(), data, lul));
+            tempnode.setHeight(Math.max(myGetH(tempnode.getRight()),
+                myGetH(tempnode.getLeft())) + 1);
+            tempnode.setBalanceFactor(myGetH(tempnode.getLeft())
+                - myGetH(tempnode.getRight()));            
+            tempnode = rotate(tempnode);
 
-        if (data.compareTo(node.getData()) == 0) {
+        } else if (data.compareTo(tempnode.getData()) > 0) {
+            tempnode.setRight(removeHelper(tempnode.getRight(), data, lul));
+            tempnode.setHeight(Math.max(myGetH(tempnode.getRight()),
+                myGetH(tempnode.getLeft())) + 1);
+            tempnode.setBalanceFactor(myGetH(tempnode.getLeft())
+                - myGetH(tempnode.getRight()));
+            tempnode = rotate(tempnode);
+        } else {
 
-            dummy.setData(node.getData());
-            // no children
-            if (node.getLeft() == null && node.getRight() == null) {
-                return null;
-            // both children
-            } else if (node.getLeft() != null && node.getRight() != null) {
-                AVLNode<T> tempDummy = new AVLNode<T>(null);
-                node.setRight(predecessor(node.getRight(), tempDummy));
-                node.setData(tempDummy.getData());
-            // one child
+            if (tempnode.getLeft() == null) {
+                size--;
+                lul.setData(tempnode.getData());
+                tempnode.setBalanceFactor(myGetH(tempnode.getLeft())
+                    - myGetH(tempnode.getRight()));
+
+                return tempnode.getRight();
+            } else if (tempnode.getRight() == null) {
+                size--;
+                lul.setData(tempnode.getData());
+                tempnode.setBalanceFactor(myGetH(tempnode.getLeft())
+                    - myGetH(tempnode.getRight()));
+
+                return tempnode.getLeft();
             } else {
-                return 
-                    node.getRight() == null ? node.getLeft() : node.getRight();
+                lul.setData(tempnode.getData());
+                tempnode.setData(bignode(tempnode.getLeft()));
+                tempnode.setLeft(removeHelper(tempnode.getLeft(),
+                                            tempnode.getData(), none));
+                tempnode.setHeight(Math.max(myGetH(tempnode.getRight()),
+                    myGetH(tempnode.getLeft())) + 1);
+                tempnode.setBalanceFactor(myGetH(tempnode.getLeft())
+                    - myGetH(tempnode.getRight()));
+                tempnode = rotate(tempnode);
             }
-
-        } else if (data.compareTo(node.getData()) < 0) {
-            node.setLeft(removeHelper(node.getLeft(), data, dummy));
-        } else  {
-            node.setRight(removeHelper(node.getRight(), data, dummy));
         }
+        tempnode.setBalanceFactor(myGetH(tempnode.getLeft())
+            - myGetH(tempnode.getRight()));
 
-        updateHeightAndBalanceFactor(node);
-        return rotate(node); // rotates the nodes if neccesarry
+        return tempnode;
 
     }
+
 
     /**
      * Helper for node remove helper. Find a predecessor by looking at the 
@@ -200,6 +222,21 @@ public class AVL<T extends Comparable<? super T>> {
         
         // updateHeightAndBalanceFactor(node);
         return node;
+    }
+
+    private T bignode(AVLNode<T> onenode) {
+        while (onenode.getRight() != null) {
+            onenode = onenode.getRight();
+        }
+        return onenode.getData();
+    }
+
+    private int myGetH(AVLNode<T> tempnode) {
+        if (tempnode == null) {
+            return -1;
+        } else {
+            return tempnode.getHeight();
+        }
     }
 
 	private AVLNode<T> rotate(AVLNode<T> target) {
