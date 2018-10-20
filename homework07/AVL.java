@@ -5,9 +5,9 @@ import java.lang.UnsupportedOperationException;
 /**
  * Your implementation of an AVL Tree.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class AVL<T extends Comparable<? super T>> {
@@ -82,11 +82,11 @@ public class AVL<T extends Comparable<? super T>> {
         } else if (data.compareTo(node.getData()) > 0) {
             node.setRight(addHelper(node.getRight(), data));   
         } else if (data.compareTo(node.getData()) < 0) {
-            node.setLeft(addHelper(node.getRight(), data));
+            node.setLeft(addHelper(node.getLeft(), data));
         }
         
         updateHeightAndBalanceFactor(node);
-        return node;
+        return rotate(node);
     }
 
     private void updateHeightAndBalanceFactor (AVLNode<T> node) {
@@ -154,6 +154,7 @@ public class AVL<T extends Comparable<? super T>> {
         }
 
         if (data.compareTo(node.getData()) == 0) {
+
             dummy.setData(node.getData());
             // no children
             if (node.getLeft() == null && node.getRight() == null) {
@@ -169,7 +170,6 @@ public class AVL<T extends Comparable<? super T>> {
                     node.getRight() == null ? node.getLeft() : node.getRight();
             }
 
-
         } else if (data.compareTo(node.getData()) < 0) {
             node.setLeft(removeHelper(node.getLeft(), data, dummy));
         } else  {
@@ -177,7 +177,7 @@ public class AVL<T extends Comparable<? super T>> {
         }
 
         updateHeightAndBalanceFactor(node);
-        return node;
+        return rotate(node); // rotates the nodes if neccesarry
 
     }
 
@@ -197,8 +197,45 @@ public class AVL<T extends Comparable<? super T>> {
         } else {
             node.setRight(predecessor(node.getRight(), temp));
         }
+        
+        // updateHeightAndBalanceFactor(node);
         return node;
     }
+
+	private AVLNode<T> rotate(AVLNode<T> target) {
+		if (target.getBalanceFactor() > 1) {
+            // double rotation
+			if (target.getLeft().getBalanceFactor() < 0) {
+				target.setLeft(rotateLeft(target.getLeft()));
+			}
+			return rotateRight(target);
+		} else if (target.getBalanceFactor() < -1) {
+            // double rotation
+			if (target.getRight().getBalanceFactor() > 0) {
+				target.setRight(rotateRight(target.getRight()));
+			}
+			return rotateLeft(target);
+		}
+		return target;
+	}
+
+	private AVLNode<T> rotateLeft(AVLNode<T> node) {
+		AVLNode<T> newRoot = node.getRight();
+		node.setRight(newRoot.getLeft());
+		newRoot.setLeft(node);
+        updateHeightAndBalanceFactor(node);
+        updateHeightAndBalanceFactor(newRoot);
+		return newRoot;
+    }
+    
+	private AVLNode<T> rotateRight(AVLNode<T> node) {
+		AVLNode<T> newRoot = node.getLeft();
+		node.setLeft(newRoot.getRight());
+		newRoot.setRight(node);
+        updateHeightAndBalanceFactor(node);
+        updateHeightAndBalanceFactor(newRoot);
+		return newRoot;
+	}
 
     /**
      * Returns the data in the tree matching the parameter passed in (think
@@ -290,7 +327,29 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the data in the maximum deepest node or null if the tree is empty
      */
     public T maxDeepestNode() {
-        throw new UnsupportedOperationException();
+        return maxDeepestNodeSubtree(root).getData();
+    }
+
+    public AVLNode<T> maxDeepestNodeSubtree(AVLNode<T> root) {
+        if (root.getLeft() == null && root.getRight() == null) {
+            return root;
+        }
+
+        if (root.getRight() == null) {
+            return maxDeepestNodeSubtree(root.getLeft());
+        }
+
+        if (root.getLeft() == null) {
+            return maxDeepestNodeSubtree(root.getRight());
+        }
+
+        if (root.getLeft().getHeight() == root.getRight().getHeight()) {
+            return maxDeepestNodeSubtree(root.getRight());
+        }
+
+        return root.getLeft().getHeight() > root.getRight().getHeight() ? 
+            maxDeepestNodeSubtree(root.getLeft()) : 
+            maxDeepestNodeSubtree(root.getRight());
     }
 
     /**
@@ -330,7 +389,21 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the data of the deepest common ancestor
      */
     public T deepestCommonAncestor(T data1, T data2) {
-        throw new UnsupportedOperationException();
+        return lowestCommonAncestorHelper(root, data1, data2);
+    }
+    
+    // Technically an LCA problem
+    public T lowestCommonAncestorHelper(AVLNode<T> root, T p, T q) {
+        if (root.getData().compareTo(p) < 0 && root.getData().compareTo(q) < 0) {
+            return lowestCommonAncestorHelper(root.getRight(), p, q);
+        }
+
+        if (root.getData().compareTo(p) > 0 && root.getData().compareTo(q) > 0) {
+            return lowestCommonAncestorHelper(root.getLeft(), p, q);
+        }
+    
+        // when the paths deviate
+        return root.getData();
     }
 
     /**
