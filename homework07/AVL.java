@@ -1,6 +1,5 @@
 import java.util.Collection;
 import java.util.NoSuchElementException;
-import java.lang.UnsupportedOperationException;
 
 /**
  * Your implementation of an AVL Tree.
@@ -14,6 +13,8 @@ public class AVL<T extends Comparable<? super T>> {
     // DO NOT ADD OR MODIFY INSTANCE VARIABLES.
     private AVLNode<T> root;
     private int size;
+
+    // Credit: TAs psuedocode
 
     /**
      * A no-argument constructor that should initialize an empty AVL.
@@ -74,6 +75,8 @@ public class AVL<T extends Comparable<? super T>> {
      *
      * @param node the node to start the add process from
      * @param data the data to be added
+     * 
+     * @return the updated root of the tree
      */
     private AVLNode<T> addHelper(AVLNode<T> node, T data) {
         if (node == null) {
@@ -89,7 +92,12 @@ public class AVL<T extends Comparable<? super T>> {
         return rotate(node);
     }
 
-    private void updateHeightAndBalanceFactor (AVLNode<T> node) {
+    /**
+     * Helper method to update height and balance for a node.
+     *
+     * @param node the node to update height and balance factor
+     */
+    private void updateHeightAndBalanceFactor(AVLNode<T> node) {
 
         int leftHeight = -1;
         int rightHeight = -1;
@@ -161,7 +169,7 @@ public class AVL<T extends Comparable<? super T>> {
             // both children
             } else if (node.getLeft() != null && node.getRight() != null) {
                 AVLNode<T> tempDummy = new AVLNode<T>(null);
-                node.setRight(predecessor(node.getRight(), tempDummy));
+                node.setLeft(predecessor(node.getLeft(), tempDummy));
                 node.setData(tempDummy.getData());
             // one child
             } else {
@@ -198,44 +206,63 @@ public class AVL<T extends Comparable<? super T>> {
             node.setRight(predecessor(node.getRight(), temp));
         }
         
-        // updateHeightAndBalanceFactor(node);
-        return node;
+        updateHeightAndBalanceFactor(node);
+        return rotate(node);
     }
 
-	private AVLNode<T> rotate(AVLNode<T> target) {
-		if (target.getBalanceFactor() == 2) {
+    /**
+     * Helper for node rotation. Rotates a node if it's out of balance
+     * 
+     * @param target the node of the subtree to check for rotation
+     * @return the rotated node
+     */
+    private AVLNode<T> rotate(AVLNode<T> target) {
+        if (target.getBalanceFactor() == 2) {
             // double rotation
-			if (target.getLeft().getBalanceFactor() == -1) {
-				target.setLeft(rotateLeft(target.getLeft()));
-			}
-			return rotateRight(target);
-		} else if (target.getBalanceFactor() == -2) {
+            if (target.getLeft().getBalanceFactor() == -1) {
+                target.setLeft(rotateLeft(target.getLeft()));
+            }
+            return rotateRight(target);
+        } else if (target.getBalanceFactor() == -2) {
             // double rotation
-			if (target.getRight().getBalanceFactor() == 1) {
-				target.setRight(rotateRight(target.getRight()));
-			}
-			return rotateLeft(target);
-		}
-		return target;
-	}
+            if (target.getRight().getBalanceFactor() == 1) {
+                target.setRight(rotateRight(target.getRight()));
+            }
+            return rotateLeft(target);
+        }
+        return target;
+    }
 
-	private AVLNode<T> rotateLeft(AVLNode<T> node) {
-		AVLNode<T> newRoot = node.getRight();
-		node.setRight(newRoot.getLeft());
-		newRoot.setLeft(node);
+
+    /**
+     * Helper for node left rotation. Rotates a node in the left direction
+     * 
+     * @param node the node of the subtree to rotate
+     * @return the rotated node
+     */
+    private AVLNode<T> rotateLeft(AVLNode<T> node) {
+        AVLNode<T> newRoot = node.getRight();
+        node.setRight(newRoot.getLeft());
+        newRoot.setLeft(node);
         updateHeightAndBalanceFactor(node);
         updateHeightAndBalanceFactor(newRoot);
-		return newRoot;
+        return newRoot;
     }
     
-	private AVLNode<T> rotateRight(AVLNode<T> node) {
-		AVLNode<T> newRoot = node.getLeft();
-		node.setLeft(newRoot.getRight());
-		newRoot.setRight(node);
+    /**
+     * Helper for node right rotation. Rotates a node in the right direction
+     * 
+     * @param node the node of the subtree to rotate
+     * @return the rotated node
+     */
+    private AVLNode<T> rotateRight(AVLNode<T> node) {
+        AVLNode<T> newRoot = node.getLeft();
+        node.setLeft(newRoot.getRight());
+        newRoot.setRight(node);
         updateHeightAndBalanceFactor(node);
         updateHeightAndBalanceFactor(newRoot);
-		return newRoot;
-	}
+        return newRoot;
+    }
 
     /**
      * Returns the data in the tree matching the parameter passed in (think
@@ -327,10 +354,23 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the data in the maximum deepest node or null if the tree is empty
      */
     public T maxDeepestNode() {
+        if (root == null) {
+            return null;
+        }
         return maxDeepestNodeSubtree(root).getData();
     }
 
+
+    /**
+     * Helper method for 'maxdeepestnode.' 
+     * Returns the deepest node in a subtree -- recursive helper
+     *
+     * @throws java.util.NoSuchElementException if the data is not found
+     * @param root the root node.
+     * @return the deepest node in in the tree
+     */
     public AVLNode<T> maxDeepestNodeSubtree(AVLNode<T> root) {
+        
         if (root.getLeft() == null && root.getRight() == null) {
             return root;
         }
@@ -347,9 +387,9 @@ public class AVL<T extends Comparable<? super T>> {
             return maxDeepestNodeSubtree(root.getRight());
         }
 
-        return root.getLeft().getHeight() > root.getRight().getHeight() ? 
-            maxDeepestNodeSubtree(root.getLeft()) : 
-            maxDeepestNodeSubtree(root.getRight());
+        return root.getLeft().getHeight() > root.getRight().getHeight() 
+            ? maxDeepestNodeSubtree(root.getLeft()) 
+            : maxDeepestNodeSubtree(root.getRight());
     }
 
     /**
@@ -389,21 +429,43 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the data of the deepest common ancestor
      */
     public T deepestCommonAncestor(T data1, T data2) {
-        return lowestCommonAncestorHelper(root, data1, data2);
+        if (data1 == null || data2 == null) {
+            throw new IllegalArgumentException();
+        }
+        return lowestCommonAncestorHelper(root, data1, data2).getData();
     }
     
-    // Technically an LCA problem
-    public T lowestCommonAncestorHelper(AVLNode<T> root, T p, T q) {
-        if (root.getData().compareTo(p) < 0 && root.getData().compareTo(q) < 0) {
-            return lowestCommonAncestorHelper(root.getRight(), p, q);
-        }
 
-        if (root.getData().compareTo(p) > 0 && root.getData().compareTo(q) > 0) {
-            return lowestCommonAncestorHelper(root.getLeft(), p, q);
+    /**
+     * Helper method for 'deepestCommonAncestor.' Picks subtree by 
+     * comparing nodes, recursively.
+     *
+     * @throws java.util.NoSuchElementException if the data is not found
+     * @param root the node of the subtree to search from.
+     * @param data1 the first data
+     * @param data2 the second data
+     * @return the node where the recursive paths diverge (the LCA)
+     */
+    public AVLNode<T> lowestCommonAncestorHelper(AVLNode<T> root, T data1, 
+        T data2) {
+
+        if (root == null) {
+            throw new 
+                NoSuchElementException("Data could not be found in the tree");
         }
-    
-        // when the paths deviate
-        return root.getData();
+ 
+        if (root.getData().compareTo(data1) > 0 
+            && root.getData().compareTo(data2) < 0) {
+            return root;  
+        } else if (root.getData().compareTo(data1) > 0 
+            && root.getData().compareTo(data2) > 0) {
+            return lowestCommonAncestorHelper(root.getLeft(), data1, data2);
+        } else if (root.getData().compareTo(data1) < 0 
+            && root.getData().compareTo(data2) < 0) {
+            return lowestCommonAncestorHelper(root.getRight(), data1, data2);
+        }
+     
+        return root;
     }
 
     /**
@@ -423,6 +485,9 @@ public class AVL<T extends Comparable<? super T>> {
      * @return the height of the root of the tree, -1 if the tree is empty
      */
     public int height() {
+        if (root == null) {
+            return -1;
+        }
         return root.getHeight();
     }
 
