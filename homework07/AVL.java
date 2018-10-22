@@ -432,6 +432,12 @@ public class AVL<T extends Comparable<? super T>> {
         if (data1 == null || data2 == null) {
             throw new IllegalArgumentException();
         }
+        
+        AVLNode<T> lcaNode = lowestCommonAncestorHelper(root, data1, data2);
+
+        getHelper(lcaNode, data1);
+        getHelper(lcaNode, data2);
+
         return lowestCommonAncestorHelper(root, data1, data2).getData();
     }
     

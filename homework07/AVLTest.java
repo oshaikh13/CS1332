@@ -414,10 +414,10 @@ public class AVLTest {
         for(int i=-1;i<=31;i++){
             for(int j=-1;j<=31;j++){
                 if (i == -1 || j == -1 || i == 31 || j == 31) {
-                    // try {
-                    //     tree.deepestCommonAncestor(i, j);
-                    //     fail("The deepestCommonAncestor method did not throw an exception when searching for the ancestor of a nonexistent element.");
-                    // } catch (NoSuchElementException e) {}
+                    try {
+                        tree.deepestCommonAncestor(i, j);
+                        fail("The deepestCommonAncestor method did not throw an exception when searching for the ancestor of a nonexistent element.");
+                    } catch (NoSuchElementException e) {}
                 } else {
                     assertEquals("The deepestCommonAncestor function returned the wrong value.", getCommonAncestorForBalanced31Tree(i, j), tree.deepestCommonAncestor(i, j));
                 }
