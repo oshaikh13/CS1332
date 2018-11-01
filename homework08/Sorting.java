@@ -1,0 +1,334 @@
+import java.util.Comparator;
+import java.util.Random;
+import java.util.ArrayList;
+
+/**
+ * Your implementation of various sorting algorithms.
+ *
+ * @author YOUR NAME HERE
+ * @userid YOUR USER ID HERE (i.e. gburdell3)
+ * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @version 1.0
+ */
+public class Sorting {
+
+    /**
+     * Implement cocktail sort.
+     *
+     * It should be:
+     *  in-place
+     *  stable
+     *
+     * Have a worst case running time of:
+     *  O(n^2)
+     *
+     * And a best case running time of:
+     *  O(n)
+     *
+     * You may assume that the array doesn't contain any null elements.
+     *
+     * NOTE: See pdf for last swapped optimization for cocktail sort. You
+     * MUST implement cocktail sort with this optimization
+     *
+     * @throws IllegalArgumentException if the array or comparator is null
+     * @param <T> data type to sort
+     * @param arr the array that must be sorted after the method runs
+     * @param comparator the Comparator used to compare the data in arr
+     */
+    public static <T> void cocktailSort(T[] arr, Comparator<T> comparator) {
+
+        boolean swapped = true;
+        int startBound = 0;
+        int endBound = arr.length - 1;
+        while (startBound < endBound && swapped) {
+
+            int lastSwap = arr.length - 1;
+            int firstSwap = 0;
+
+            swapped = false;
+            for (int i = startBound; i < endBound; i++) {
+                if (comparator.compare(arr[i], arr[i + 1]) > 0) {
+                    swap(arr, i, i + 1);
+                    swapped = true;
+                    lastSwap = i;
+                }
+            }
+
+            endBound = lastSwap;
+
+            if (swapped) {
+                swapped = false;
+                for (int i = endBound; i > startBound; i--) {
+                    if (comparator.compare(arr[i], arr[i - 1]) < 0) {
+                        swap(arr, i, i - 1);
+                        swapped = true;
+                        firstSwap = i;
+                    }
+                }
+            }
+            startBound = firstSwap;
+        }
+
+    
+    }
+
+    /**
+     * Implement insertion sort.
+     *
+     * It should be:
+     *  in-place
+     *  stable
+     *
+     * Have a worst case running time of:
+     *  O(n^2)
+     *
+     * And a best case running time of:
+     *  O(n)
+     *
+     * You may assume that the array doesn't contain any null elements.
+     *
+     * @throws IllegalArgumentException if the array or comparator is null
+     * @param <T> data type to sort
+     * @param arr the array that must be sorted after the method runs
+     * @param comparator the Comparator used to compare the data in arr
+     */
+    public static <T> void insertionSort(T[] arr, Comparator<T> comparator) {
+        for (int i = 1; i < arr.length; i++) {
+            int j = i;
+            while (j > 0 && comparator.compare(arr[j - 1], arr[j]) > 0) {
+                swap(arr, j, j - 1);
+                j--;
+            }
+        }
+    }
+
+    /**
+     * Implement selection sort.
+     *
+     * It should be:
+     *  in-place
+     *
+     * Have a worst case running time of:
+     *  O(n^2)
+     *
+     * And a best case running time of:
+     *  O(n^2)
+     *
+     *
+     * You may assume that the array doesn't contain any null elements.
+     *
+     * Note that there may be duplicates in the array.
+     *
+     * @throws IllegalArgumentException if the array or comparator is null
+     * @param <T> data type to sort
+     * @param arr the array that must be sorted after the method runs
+     * @param comparator the Comparator used to compare the data in arr
+     */
+    public static <T> void selectionSort(T[] arr, Comparator<T> comparator) {
+        for (int i = 0; i < arr.length; i++) {
+            int minIndex = i;
+            for (int j = i + 1; j < arr.length; j++) {
+                if (comparator.compare(arr[j], arr[minIndex]) < 0) {
+                    minIndex = j;
+                }
+            }
+            swap(arr, minIndex, i);
+        }
+    }
+
+    /**
+     * Implement merge sort.
+     *
+     * It should be:
+     *  stable
+     *
+     * Have a worst case running time of:
+     *  O(n log n)
+     *
+     * And a best case running time of:
+     *  O(n log n)
+     *
+     * You may assume that the array doesn't contain any null elements.
+     *
+     * You can create more arrays to run mergesort, but at the end,
+     * everything should be merged back into the original T[]
+     * which was passed in.
+     *
+     * When splitting the array, if there is an odd number of elements, put the
+     * extra data on the right side.
+     *
+     * @throws IllegalArgumentException if the array or comparator is null
+     * @param <T> data type to sort
+     * @param arr the array to be sorted
+     * @param comparator the Comparator used to compare the data in arr
+     */
+    public static <T> void mergeSort(T[] arr, Comparator<T> comparator) {
+
+        if (arr.length == 1) return;
+
+        int midIndex = arr.length / 2;
+        T[] leftArray = copyArray(arr, 0, midIndex);
+        T[] rightArray = copyArray(arr, midIndex, arr.length);
+
+        mergeSort(leftArray, comparator);
+        mergeSort(rightArray, comparator);
+
+        int leftIndex = 0;
+        int rightIndex = 0;
+        int currentIndex = 0;
+
+        while (leftIndex < midIndex && rightIndex < (arr.length - midIndex)) {
+            if (comparator.compare(leftArray[leftIndex], rightArray[rightIndex]) < 0) {
+                arr[currentIndex] = leftArray[leftIndex];
+                leftIndex++;
+            } else {
+                arr[currentIndex] = rightArray[rightIndex];
+                rightIndex++;
+            }
+            currentIndex++;
+        }
+
+        while (leftIndex < midIndex) {
+            arr[currentIndex] = leftArray[leftIndex];
+            leftIndex++;
+            currentIndex++;
+        }
+
+        while (rightIndex < (arr.length - midIndex)) {
+            arr[currentIndex] = rightArray[rightIndex];
+            rightIndex++;
+            currentIndex++;
+        }
+        
+    }
+
+    public static <T> T[] copyArray(T[] arr, int start, int end) {
+        T[] copy = (T[]) new Object[end - start];
+        for (int i = start, j = 0; i < end; i++, j++) {
+            copy[j] = arr[i];
+        }
+        return copy;
+    }
+
+
+    /**
+     * Implement LSD (least significant digit) radix sort.
+     *
+     * Make sure you code the algorithm as you have been taught it in class.
+     * There are several versions of this algorithm and you may not get full
+     * credit if you do not implement the one we have taught you!
+     *
+     * Remember you CANNOT convert the ints to strings at any point in your
+     * code! Doing so may result in a 0 for the implementation.
+     *
+     * It should be:
+     *  stable
+     *
+     * Have a worst case running time of:
+     *  O(kn)
+     *
+     * And a best case running time of:
+     *  O(kn)
+     *
+     * Refer to the PDF for more information on LSD Radix Sort.
+     *
+     * You may use {@code java.util.ArrayList} or {@code java.util.LinkedList}
+     * if you wish, but it may only be used inside radix sort and any radix sort
+     * helpers. Do NOT use these classes with other sorts.
+     *
+     * Do NOT use anything from the Math class except Math.abs
+     *
+     * @throws IllegalArgumentException if the array is null
+     * @param arr the array to be sorted
+     */
+    public static void lsdRadixSort(int[] arr) {
+
+        if (arr == null) {
+            throw 
+                new IllegalArgumentException("Array to be sorted cannot be null!");
+        }
+
+        if (arr.length == 1) {
+            return;
+        }
+
+        ArrayList<Integer>[] buckets = new ArrayList[19];
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = new ArrayList<Integer>();
+        }
+
+        int longestNumber = arr[0];
+        int iterations = 0;
+
+        for (int i = 1; i < arr.length; i++) {
+            if (Math.abs(arr[i]) > longestNumber) {
+                longestNumber = arr[i];
+            }
+        }
+
+        while (longestNumber > 0) {
+            iterations++;
+            longestNumber /= 10;
+        }
+
+        for (int i = 1, divisor = 1; i <= iterations; i++, divisor *= 10) {
+            for (int j = 0; j < arr.length; j++) {
+                buckets[(arr[j] / divisor % 10) + 9].add(arr[j]);
+            }
+            
+            for (int k = 0, index = 0; k < buckets.length; k++) {
+                while (!buckets[k].isEmpty()) {
+                    arr[index] = buckets[k].remove(0);
+                    index++;
+                }
+            }
+        }
+    }
+
+    /**
+     * Implement kth select.
+     *
+     * Use the provided random object to select your pivots.
+     * For example if you need a pivot between a (inclusive)
+     * and b (exclusive) where b > a, use the following code:
+     *
+     * int pivotIndex = r.nextInt(b - a) + a;
+     *
+     * It should be:
+     *  in-place
+     *
+     * Have a worst case running time of:
+     *  O(n^2)
+     *
+     * And a best case running time of:
+     *  O(n)
+     *
+     * You may assume that the array doesn't contain any null elements.
+     *
+     * Make sure you code the algorithm as you have been taught it in class.
+     * There are several versions of this algorithm and you may not get full
+     * credit if you do not implement the one we have taught you!
+     *
+     * @throws IllegalArgumentException if the array or comparator or rand is
+     * null or k is not in the range of 1 to arr.length
+     * @param <T> data type to sort
+     * @param k the index to retrieve data from + 1 (due to 0-indexing) if
+     *          the array was sorted; the 'k' in "kth select"; e.g. if k ==
+     *          1, return the smallest element in the array
+     * @param arr the array that should be modified after the method
+     * is finished executing as needed
+     * @param comparator the Comparator used to compare the data in arr
+     * @param rand the Random object used to select pivots
+     * @return the kth smallest element
+     */
+    public static <T> T kthSelect(int k, T[] arr, Comparator<T> comparator,
+                                  Random rand) {
+        return null;
+    }
+
+    private static <T> void swap (T[] arr, int i, int j) {
+        T temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
