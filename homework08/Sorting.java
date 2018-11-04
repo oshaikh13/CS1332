@@ -1,13 +1,13 @@
 import java.util.Comparator;
 import java.util.Random;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Your implementation of various sorting algorithms.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class Sorting {
@@ -244,44 +244,43 @@ public class Sorting {
     public static void lsdRadixSort(int[] arr) {
 
         if (arr == null) {
-            throw 
-                new IllegalArgumentException("Array to be sorted cannot be null!");
+            throw new IllegalArgumentException("Array cannot be null");
         }
 
-        if (arr.length == 1) {
-            return;
-        }
-
-        ArrayList<Integer>[] buckets = new ArrayList[19];
-        for (int i = 0; i < buckets.length; i++) {
-            buckets[i] = new ArrayList<Integer>();
-        }
-
-        int longestNumber = arr[0];
-        int iterations = 0;
-
+        int longest = arr[0];
         for (int i = 1; i < arr.length; i++) {
-            if (Math.abs(arr[i]) > longestNumber) {
-                longestNumber = arr[i];
+            if (Math.abs(arr[i]) > longest) {
+                longest = Math.abs(arr[i]);
+            } else if (arr[i] == Integer.MIN_VALUE) {
+                longest = Integer.MAX_VALUE;
             }
         }
 
-        while (longestNumber > 0) {
+        int iterations = 0;
+        while (longest != 0) {
+            longest /= 10;
             iterations++;
-            longestNumber /= 10;
         }
 
-        for (int i = 1, divisor = 1; i <= iterations; i++, divisor *= 10) {
-            for (int j = 0; j < arr.length; j++) {
-                buckets[(arr[j] / divisor % 10) + 9].add(arr[j]);
+        LinkedList<Integer>[] buckets = new LinkedList[19];
+
+        for (int i = 0; i < buckets.length; i++) {
+            buckets[i] = new LinkedList<Integer>();
+        }
+
+        long divisor = 1;
+        for (int i = 0; i < iterations; i++, divisor *= 10) {
+            for (int item : arr) {
+                buckets[(int) (item / divisor) % 10 + 9].add(item);
             }
-            
-            for (int k = 0, index = 0; k < buckets.length; k++) {
-                while (!buckets[k].isEmpty()) {
-                    arr[index] = buckets[k].remove(0);
-                    index++;
+
+            int index = 0;
+            for (LinkedList<Integer> list : buckets) {
+                while (!list.isEmpty()) {
+                    arr[index++] = list.remove();
                 }
             }
+
         }
     }
 
@@ -323,7 +322,53 @@ public class Sorting {
      */
     public static <T> T kthSelect(int k, T[] arr, Comparator<T> comparator,
                                   Random rand) {
-        return null;
+        if (rand == null || arr == null || comparator == null) {
+            throw new IllegalArgumentException("input array/comparator/rand is null");
+        }
+        
+        if (k < 1 || k > arr.length) {
+            throw new IllegalArgumentException("k is not within range of arr");
+        }
+
+        int kthElementIdx = kthSelectHelper(k - 1, arr, 0, arr.length, comparator, rand);
+        return arr[kthElementIdx];
+    }
+
+    private static <T> int kthSelectHelper(int k, T[] arr, int left, int right,
+                                    Comparator<T> comparator, Random rand) {
+        
+        int pivotIdx = rand.nextInt(right - left) + left;
+        int i = left + 1;
+        int j = right - 1;
+
+        T pivot = arr[pivotIdx];
+        swap(arr, pivotIdx, left);
+
+        while (i <= j) {
+            while (i <= j && comparator.compare(arr[i], pivot) <= 0) {
+                i++;
+            }
+            while (i <= j && comparator.compare(arr[j], pivot) >= 0) {
+                j--;
+            }
+            if (i < j) {
+                swap(arr, i, j);
+                j--;
+                i++;
+            }
+        }
+
+        swap(arr, j, left);
+
+        if (k > j) {
+            return kthSelectHelper(k, arr, j + 1,
+                    right, comparator, rand);
+        } else if (k < j) {
+            return kthSelectHelper(k, arr, left, j, comparator, rand);
+        }
+        
+        return j;
+        
     }
 
     private static <T> void swap (T[] arr, int i, int j) {

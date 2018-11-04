@@ -1,6 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
@@ -137,7 +138,10 @@ public class SortingStudentTests {
     @Test(timeout = TIMEOUT)
     public void testKthSelect() {
         Random rand = new Random(234);
+        System.out.println("BEFOR: " + Arrays.toString(kArray));
         Sorting.kthSelect(5, kArray, kComp, rand);
+        System.out.println("WOOT: " + Arrays.toString(kArray));
+        System.out.println("EXPEC: " + Arrays.toString(kPartial));
         assertArrayEquals(kPartial, kArray);
         assertTrue("Number of comparisons: " + kComp.getCount(),
                 kComp.getCount() <= 19);
