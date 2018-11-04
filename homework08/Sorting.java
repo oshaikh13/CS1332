@@ -163,12 +163,14 @@ public class Sorting {
      * @param comparator the Comparator used to compare the data in arr
      */
     public static <T> void mergeSort(T[] arr, Comparator<T> comparator) {
+        if (arr == null || comparator == null) {
+            throw new IllegalArgumentException("array or comparator cannot be null.");
+        }
 
-        if (arr.length == 1) return;
+        if (arr.length == 0 || arr.length == 1) return;
 
-        int midIndex = arr.length / 2;
-        T[] leftArray = copyArray(arr, 0, midIndex);
-        T[] rightArray = copyArray(arr, midIndex, arr.length);
+        T[] leftArray = copyArray(arr, 0, arr.length / 2);
+        T[] rightArray = copyArray(arr, arr.length / 2, arr.length);
 
         mergeSort(leftArray, comparator);
         mergeSort(rightArray, comparator);
@@ -176,29 +178,30 @@ public class Sorting {
         int leftIndex = 0;
         int rightIndex = 0;
         int currentIndex = 0;
-
-        while (leftIndex < midIndex && rightIndex < (arr.length - midIndex)) {
-            if (comparator.compare(leftArray[leftIndex], rightArray[rightIndex]) < 0) {
+        
+        while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
+            if (comparator.compare(leftArray[leftIndex], rightArray[rightIndex]) <= 0) {
                 arr[currentIndex] = leftArray[leftIndex];
                 leftIndex++;
+                currentIndex++;
             } else {
                 arr[currentIndex] = rightArray[rightIndex];
                 rightIndex++;
+                currentIndex++;
             }
-            currentIndex++;
         }
 
-        while (leftIndex < midIndex) {
+        while (leftIndex < leftArray.length) {
             arr[currentIndex] = leftArray[leftIndex];
             leftIndex++;
             currentIndex++;
         }
 
-        while (rightIndex < (arr.length - midIndex)) {
+        while (rightIndex < rightArray.length) {
             arr[currentIndex] = rightArray[rightIndex];
             rightIndex++;
             currentIndex++;
-        }
+        }        
         
     }
 
