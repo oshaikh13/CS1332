@@ -164,10 +164,13 @@ public class Sorting {
      */
     public static <T> void mergeSort(T[] arr, Comparator<T> comparator) {
         if (arr == null || comparator == null) {
-            throw new IllegalArgumentException("array or comparator cannot be null.");
+            throw new 
+                IllegalArgumentException("array or comparator cannot be null.");
         }
 
-        if (arr.length == 0 || arr.length == 1) return;
+        if (arr.length == 0 || arr.length == 1) {
+            return;
+        }
 
         T[] leftArray = copyArray(arr, 0, arr.length / 2);
         T[] rightArray = copyArray(arr, arr.length / 2, arr.length);
@@ -179,8 +182,10 @@ public class Sorting {
         int rightIndex = 0;
         int currentIndex = 0;
         
-        while (leftIndex < leftArray.length && rightIndex < rightArray.length) {
-            if (comparator.compare(leftArray[leftIndex], rightArray[rightIndex]) <= 0) {
+        while (leftIndex < leftArray.length 
+            && rightIndex < rightArray.length) {
+            if (comparator.compare(leftArray[leftIndex], 
+                rightArray[rightIndex]) <= 0) {
                 arr[currentIndex] = leftArray[leftIndex];
                 leftIndex++;
                 currentIndex++;
@@ -205,6 +210,15 @@ public class Sorting {
         
     }
 
+    /**
+     * Creates a copy of an array within bounds.
+     * 
+     * @param arr the specified array
+     * @param start the starting index of copy (inclusive)
+     * @param end the ending index of the copy (exclusive)
+     * @param <T> the datatype of the array elements
+     * @return the copied array
+     */
     public static <T> T[] copyArray(T[] arr, int start, int end) {
         T[] copy = (T[]) new Object[end - start];
         for (int i = start, j = 0; i < end; i++, j++) {
@@ -326,17 +340,35 @@ public class Sorting {
     public static <T> T kthSelect(int k, T[] arr, Comparator<T> comparator,
                                   Random rand) {
         if (rand == null || arr == null || comparator == null) {
-            throw new IllegalArgumentException("input array/comparator/rand is null");
+            throw new 
+                IllegalArgumentException("input array/comparator/rand is null");
         }
         
         if (k < 1 || k > arr.length) {
             throw new IllegalArgumentException("k is not within range of arr");
         }
 
-        int kthElementIdx = kthSelectHelper(k - 1, arr, 0, arr.length, comparator, rand);
+        int kthElementIdx = 
+            kthSelectHelper(k - 1, arr, 0, arr.length, comparator, rand);
+
         return arr[kthElementIdx];
     }
 
+    /**
+     * Recursive helper for kthSelect.
+     * 
+     * @param <T> data type to sort
+     * @param k the index to retrieve data from + 1 (due to 0-indexing) if
+     *          the array was sorted; the 'k' in "kth select"; e.g. if k ==
+     *          1, return the smallest element in the array
+     * @param arr the array that should be modified after the method
+     * is finished executing as needed
+     * @param left the leftbound of the array to find the kth element in.
+     * @param right the rightbound of the array to find the kth element in.
+     * @param comparator the Comparator used to compare the data in arr
+     * @param rand the Random object used to select pivots
+     * @return the index of the kth smallest element
+     */
     private static <T> int kthSelectHelper(int k, T[] arr, int left, int right,
                                     Comparator<T> comparator, Random rand) {
         
@@ -374,7 +406,15 @@ public class Sorting {
         
     }
 
-    private static <T> void swap (T[] arr, int i, int j) {
+    /**
+     * Swaps two elements in a array.
+     * 
+     * @param arr the specified array
+     * @param i the index of element i
+     * @param j the index of element j 
+     * @param <T> the datatype of the array elements
+     */
+    private static <T> void swap(T[] arr, int i, int j) {
         T temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
