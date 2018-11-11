@@ -196,7 +196,6 @@ public class PatternMatching {
         if (pattern == null) {
             throw new IllegalArgumentException("pattern cannot be null");
         }
-        
         Map<Character, Integer> lastTable = new HashMap<>();
         for (int i = 0; i < pattern.length(); i++) {
             lastTable.put(pattern.charAt(i), i);
@@ -287,11 +286,11 @@ public class PatternMatching {
                     indicies.add(index);
                 }
             }
-            if (index != text.length() - pattern.length()) {
-                textHash = updateHash(textHash, text.charAt(index), text.charAt(index + pattern.length()), multiplier);
-            }
 
             index++;
+            if (index <= text.length() - pattern.length() - 1) {
+                textHash = updateHash(textHash, text.charAt(index), text.charAt(index + pattern.length()), multiplier);
+            }
         }
         return indicies;
     }
