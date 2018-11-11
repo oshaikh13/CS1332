@@ -75,12 +75,12 @@ public class HashMap<K, V> {
      */
     public V put(K key, V value) {
 
-        if ((size + 1) / ((double) table.length) > HashMap.MAX_LOAD_FACTOR) {
-            this.resizeBackingTable(2 * this.table.length + 1);
-        }
-
         if (key == null || value == null) {
             throw new IllegalArgumentException("Cannot get null key!");
+        }
+
+        if ((size + 1) / ((double) table.length) > HashMap.MAX_LOAD_FACTOR) {
+            this.resizeBackingTable(2 * this.table.length + 1);
         }
 
         return probePut(key, value);
@@ -119,7 +119,7 @@ public class HashMap<K, V> {
                 if (table[i].isRemoved()) {
                     table[i].setRemoved(false);
                     size++;
-                    return value;
+                    return null;
                 }
                 return oldVal;
             }

@@ -438,7 +438,7 @@ public class AVL<T extends Comparable<? super T>> {
         getHelper(lcaNode, data1);
         getHelper(lcaNode, data2);
 
-        return lowestCommonAncestorHelper(root, data1, data2).getData();
+        return lcaNode.getData();
     }
     
 

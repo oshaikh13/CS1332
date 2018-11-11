@@ -37,6 +37,11 @@ public class Sorting {
      */
     public static <T> void cocktailSort(T[] arr, Comparator<T> comparator) {
 
+        if (arr == null || comparator == null) {
+            throw new 
+                IllegalArgumentException("array or comparator cannot be null.");
+        }
+
         boolean swapped = true;
         int startBound = 0;
         int endBound = arr.length - 1;
@@ -93,6 +98,12 @@ public class Sorting {
      * @param comparator the Comparator used to compare the data in arr
      */
     public static <T> void insertionSort(T[] arr, Comparator<T> comparator) {
+
+        if (arr == null || comparator == null) {
+            throw new 
+                IllegalArgumentException("array or comparator cannot be null.");
+        }
+
         for (int i = 1; i < arr.length; i++) {
             int j = i;
             while (j > 0 && comparator.compare(arr[j - 1], arr[j]) > 0) {
@@ -125,6 +136,12 @@ public class Sorting {
      * @param comparator the Comparator used to compare the data in arr
      */
     public static <T> void selectionSort(T[] arr, Comparator<T> comparator) {
+
+        if (arr == null || comparator == null) {
+            throw new 
+                IllegalArgumentException("array or comparator cannot be null.");
+        }
+
         for (int i = 0; i < arr.length; i++) {
             int minIndex = i;
             for (int j = i + 1; j < arr.length; j++) {
@@ -396,8 +413,7 @@ public class Sorting {
         swap(arr, j, left);
 
         if (k > j) {
-            return kthSelectHelper(k, arr, j + 1,
-                    right, comparator, rand);
+            return kthSelectHelper(k, arr, j + 1, right, comparator, rand);
         } else if (k < j) {
             return kthSelectHelper(k, arr, left, j, comparator, rand);
         }
