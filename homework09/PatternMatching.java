@@ -257,41 +257,46 @@ public class PatternMatching {
     public static List<Integer> rabinKarp(CharSequence pattern,
                                           CharSequence text,
                                           CharacterComparator comparator) {
+
         if (text == null || comparator == null) {
             throw new IllegalArgumentException("text/comparator cannot be null");
         }
+
         if (pattern == null || pattern.length() == 0) {
             throw 
-                new IllegalArgumentException("pattern cannot be len 0 or null");
+                new IllegalArgumentException("pattern cannot be null or cannot have length 0");
         }
+
+        ArrayList<Integer> indicies = new ArrayList<>();
 
         if (pattern.length() > text.length()) {
-            return new ArrayList<Integer>();
+            return  indicies;
         }
 
-        List<Integer> indicies = new ArrayList<Integer>();
         int multiplier = pow(pattern.length() - 1);
-
         int patternHash = createHash(pattern, pattern.length(), multiplier);
         int textHash = createHash(text, pattern.length(), multiplier);
 
-        int index = 0;
-        while (index <= text.length() - pattern.length()) {
+        int i = 0;
+        while (i <= text.length() - pattern.length()) {
             if (patternHash == textHash) {
                 int j = 0;
-                while (j < pattern.length() && comparator.compare(pattern.charAt(j), text.charAt(j + index)) == 0) {
+                
+                while ((j < pattern.length()) && comparator.compare(pattern.charAt(j), text.charAt(i + j)) == 0) {
                     j++;
                 }
+
                 if (j == pattern.length()) {
-                    indicies.add(index);
+                    indicies.add(i);
                 }
             }
-
-            index++;
-            if (index <= text.length() - pattern.length() - 1) {
-                textHash = updateHash(textHash, text.charAt(index), text.charAt(index + pattern.length()), multiplier);
+            i++;
+            if (i <= text.length() - pattern.length()) {
+                textHash = updateHash(textHash, text.charAt(i - 1),
+                        text.charAt(i + pattern.length() - 1), multiplier);
             }
         }
+
         return indicies;
     }
 
