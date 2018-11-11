@@ -29,6 +29,15 @@ public class PatternMatching {
     public static List<Integer> kmp(CharSequence pattern, CharSequence text,
                                     CharacterComparator comparator) {
 
+        if (text == null || comparator == null) {
+            throw new IllegalArgumentException("text/comparator cannot be null");
+        }
+        if (pattern == null || pattern.length() == 0) {
+            throw 
+                new IllegalArgumentException("pattern cannot be len 0 or null");
+        }
+
+
         List<Integer> matches = new ArrayList<>();
 
         if (text.length() < pattern.length()) {
@@ -90,6 +99,11 @@ public class PatternMatching {
      */
     public static int[] buildFailureTable(CharSequence pattern,
                                           CharacterComparator comparator) {
+
+        if (pattern == null || comparator == null) {
+            throw new IllegalArgumentException("pattern/comparator cannot be null");
+        }
+
         int [] failureTable = new int[pattern.length()];
         int i = 0, j = 1;
 
@@ -123,6 +137,15 @@ public class PatternMatching {
     public static List<Integer> boyerMoore(CharSequence pattern,
                                            CharSequence text,
                                            CharacterComparator comparator) {
+
+        if (text == null || comparator == null) {
+            throw new IllegalArgumentException("text/comparator cannot be null");
+        }
+        if (pattern == null || pattern.length() == 0) {
+            throw 
+                new IllegalArgumentException("pattern cannot be len 0 or null");
+        }
+                                    
         Map<Character, Integer> lastTable = buildLastTable(pattern);
         List<Integer> matches = new ArrayList<>();
         int i = 0;
@@ -170,6 +193,10 @@ public class PatternMatching {
      *         to their last occurrence in the pattern
      */
     public static Map<Character, Integer> buildLastTable(CharSequence pattern) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("pattern cannot be null");
+        }
+        
         Map<Character, Integer> lastTable = new HashMap<>();
         for (int i = 0; i < pattern.length(); i++) {
             lastTable.put(pattern.charAt(i), i);
@@ -231,17 +258,17 @@ public class PatternMatching {
     public static List<Integer> rabinKarp(CharSequence pattern,
                                           CharSequence text,
                                           CharacterComparator comparator) {
-        if (text == null) {
-            throw new IllegalArgumentException("text null");
+        if (text == null || comparator == null) {
+            throw new IllegalArgumentException("text/comparator cannot be null");
         }
         if (pattern == null || pattern.length() == 0) {
-            throw new IllegalArgumentException(
-                    "Invalid pattern, null or length zero");
+            throw 
+                new IllegalArgumentException("pattern cannot be len 0 or null");
         }
+
         if (pattern.length() > text.length()) {
             return new ArrayList<Integer>();
         }
-
 
         List<Integer> indicies = new ArrayList<Integer>();
         int multiplier = pow(pattern.length() - 1);
@@ -252,14 +279,11 @@ public class PatternMatching {
         int index = 0;
         while (index <= text.length() - pattern.length()) {
             if (patternHash == textHash) {
-                boolean equals = true;
-                for (int i = 0; i < pattern.length(); i++) {
-                    if (comparator.compare(pattern.charAt(i), text.charAt(i + index)) != 0) {
-                        equals = false;
-                        break;
-                    }
+                int j = 0;
+                while (j < pattern.length() && comparator.compare(pattern.charAt(j), text.charAt(j + index)) == 0) {
+                    j++;
                 }
-                if (equals) {
+                if (j == pattern.length()) {
                     indicies.add(index);
                 }
             }
