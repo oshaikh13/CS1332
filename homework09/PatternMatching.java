@@ -6,9 +6,9 @@ import java.util.HashMap;
 /**
  * Your implementations of various string searching algorithms.
  *
- * @author YOUR NAME HERE
- * @userid YOUR USER ID HERE (i.e. gburdell3)
- * @GTID YOUR GT ID HERE (i.e. 900000000)
+ * @author Omar Shaikh
+ * @userid oshaikh3
+ * @GTID 903403821
  * @version 1.0
  */
 public class PatternMatching {
@@ -30,7 +30,8 @@ public class PatternMatching {
                                     CharacterComparator comparator) {
 
         if (text == null || comparator == null) {
-            throw new IllegalArgumentException("text/comparator cannot be null");
+            throw 
+                new IllegalArgumentException("text/comparator cannot be null");
         }
         if (pattern == null || pattern.length() == 0) {
             throw 
@@ -51,10 +52,13 @@ public class PatternMatching {
             return matches;
         }
 
-        int [] failureTable = buildFailureTable(pattern, comparator);
-        int i = 0, j = 0;
+        int[] failureTable = buildFailureTable(pattern, comparator);
+        int i = 0;
+        int j = 0;
         while (i <= text.length() - pattern.length()) {
-            while (j < pattern.length() && comparator.compare(text.charAt(i + j), pattern.charAt(j)) == 0) {
+            while (j < pattern.length() 
+                && comparator.compare(text.charAt(i + j), 
+                    pattern.charAt(j)) == 0) {
                 j++;
             }
             if (j == 0) {
@@ -101,11 +105,13 @@ public class PatternMatching {
                                           CharacterComparator comparator) {
 
         if (pattern == null || comparator == null) {
-            throw new IllegalArgumentException("pattern/comparator cannot be null");
+            throw new 
+                IllegalArgumentException("pattern/comparator cannot be null");
         }
 
-        int [] failureTable = new int[pattern.length()];
-        int i = 0, j = 1;
+        int[] failureTable = new int[pattern.length()];
+        int i = 0;
+        int j = 1;
 
         while (j < pattern.length()) {
             if (comparator.compare(pattern.charAt(i), pattern.charAt(j)) == 0) {
@@ -139,7 +145,8 @@ public class PatternMatching {
                                            CharacterComparator comparator) {
 
         if (text == null || comparator == null) {
-            throw new IllegalArgumentException("text/comparator cannot be null");
+            throw 
+                new IllegalArgumentException("text/comparator cannot be null");
         }
         if (pattern == null || pattern.length() == 0) {
             throw 
@@ -151,7 +158,9 @@ public class PatternMatching {
         int i = 0;
         while (i <= text.length() - pattern.length()) {
             int j = pattern.length() - 1;
-            while (j >= 0 && comparator.compare(text.charAt(i + j), pattern.charAt(j)) == 0) {
+            while (j >= 0 
+                && comparator.compare(text.charAt(i + j), 
+                    pattern.charAt(j)) == 0) {
                 j--;
             }
 
@@ -159,7 +168,8 @@ public class PatternMatching {
                 matches.add(i);
                 i++;
             } else {
-                int shiftedIndex = lastTable.getOrDefault(text.charAt(i + j), -1);
+                int shiftedIndex = 
+                    lastTable.getOrDefault(text.charAt(i + j), -1);
                 i = shiftedIndex < j ? i + (j - shiftedIndex) : i + 1;
             }
         }
@@ -259,81 +269,58 @@ public class PatternMatching {
                                           CharacterComparator comparator) {
 
         if (text == null || comparator == null) {
-            throw new IllegalArgumentException("text/comparator cannot be null");
+            throw new 
+                IllegalArgumentException("text/comparator cannot be null");
         }
 
         if (pattern == null || pattern.length() == 0) {
-            throw 
-                new IllegalArgumentException("pattern cannot be null or cannot have length 0");
+            throw new 
+                IllegalArgumentException("pattern cannot be null" 
+                + " or cannot have length 0");
         }
 
-        ArrayList<Integer> indicies = new ArrayList<>();
+        ArrayList<Integer> indicies = new ArrayList<Integer>();
 
         if (pattern.length() > text.length()) {
-            return  indicies;
+            return indicies;
         }
 
-        int multiplier = pow(pattern.length() - 1);
-        int patternHash = createHash(pattern, pattern.length(), multiplier);
-        int textHash = createHash(text, pattern.length(), multiplier);
+        long patternHash = 0;
+        long textHash = 0;
+
+        textHash += text.charAt(pattern.length() - 1);
+        patternHash +=  pattern.charAt(pattern.length() - 1);
+
+        long multiplier = 1;
+        for (int i = pattern.length() - 2; i >= 0; i--) {
+            multiplier *= BASE;
+            textHash += multiplier * text.charAt(i);
+            patternHash += multiplier * pattern.charAt(i);
+        }
 
         int i = 0;
         while (i <= text.length() - pattern.length()) {
             if (patternHash == textHash) {
                 int j = 0;
-                
-                while ((j < pattern.length()) && comparator.compare(pattern.charAt(j), text.charAt(i + j)) == 0) {
+                while (j < pattern.length()
+                        && comparator.compare(pattern.charAt(j),
+                        text.charAt(i + j)) == 0) {
                     j++;
                 }
-
                 if (j == pattern.length()) {
                     indicies.add(i);
                 }
             }
             i++;
             if (i <= text.length() - pattern.length()) {
-                textHash = updateHash(textHash, text.charAt(i - 1),
-                        text.charAt(i + pattern.length() - 1), multiplier);
+                char newLetter = text.charAt(i + pattern.length() - 1);
+                char oldLetter = text.charAt(i - 1);
+                textHash =  
+                    BASE * (textHash - multiplier * oldLetter) + newLetter;
             }
         }
-
         return indicies;
+
     }
 
-    private static int createHash(CharSequence current, int length, int multiplier) {
-        int hash = 0;
-        for (int i = 0; i < length; i++, multiplier /= BASE) {
-            hash += current.charAt(i) * multiplier;
-        }
-        return hash;
-    }
-
-    private static int updateHash(int oldHash, char oldLetter, char newLetter, int multiplier) {
-        int newHash = oldHash - oldLetter * multiplier;
-        newHash *= BASE;
-        newHash += newLetter;
-        return newHash;
-    }
-
-    private static final Map<Integer, Integer> POW_MEMO = new HashMap<>();
-    private static int pow(int exp) {
-        if (exp == 0) {
-            return 1;
-        } else if (exp == 1) {
-            return BASE;
-        }
-
-        if (POW_MEMO.containsKey(exp)) {
-            return POW_MEMO.get(exp);
-        } 
-
-        int half = pow(exp / 2);
-        if (exp % 2 == 0) {
-            POW_MEMO.put(exp, half * half);
-            return POW_MEMO.get(exp);
-        } else {
-            POW_MEMO.put(exp, half * pow((exp / 2) + 1));
-            return POW_MEMO.get(exp);
-        }
-    }
 }

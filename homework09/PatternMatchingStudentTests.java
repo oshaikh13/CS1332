@@ -298,5 +298,11 @@ public class PatternMatchingStudentTests {
                 PatternMatching.rabinKarp(sellNoMatch,
                         sellPattern, comparator));
         assertEquals(0, comparator.getComparisonCount());
+
+        List<Integer> x = PatternMatching.rabinKarp("aaaaa", "bbaabaababbaabaababbaaaaaabbbb", comparator);
+        List<Integer> expec = new ArrayList<Integer>();
+        expec.add(20);
+        assertEquals(x, expec);
+        
     }
 }
