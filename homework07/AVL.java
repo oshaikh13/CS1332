@@ -99,17 +99,8 @@ public class AVL<T extends Comparable<? super T>> {
      */
     private void updateHeightAndBalanceFactor(AVLNode<T> node) {
 
-        int leftHeight = -1;
-        int rightHeight = -1;
-
-        
-        if (node.getLeft() != null) {
-            leftHeight = node.getLeft().getHeight();
-        }
-
-        if (node.getRight() != null) {
-            rightHeight = node.getRight().getHeight();
-        }
+        int leftHeight = node.getLeft() == null ? -1 : node.getLeft().getHeight();
+        int rightHeight = node.getRight() == null ? -1 : node.getRight().getHeight();
 
         node.setBalanceFactor(leftHeight - rightHeight);
         node.setHeight(Math.max(rightHeight, leftHeight) + 1);

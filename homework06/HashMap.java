@@ -276,8 +276,8 @@ public class HashMap<K, V> {
                 continue;
             }
 
-            j++;
             values.add(table[i].getValue());
+            j++;
 
         }
 
@@ -312,7 +312,7 @@ public class HashMap<K, V> {
         }
 
         MapEntry<K, V>[] oldTable = table;
-        table = new MapEntry[length];
+        table = new MapEntry<K,V>[length];
         int oldSize = size;
         for (int i = 0, j = 0; i < oldTable.length && j < oldSize; i++) {
 
@@ -338,7 +338,7 @@ public class HashMap<K, V> {
      */
     private int hash(K key) {
         int backingIndex = key.hashCode() % table.length;
-        return backingIndex < 0 ? Math.abs(backingIndex) : backingIndex;
+        return Math.abs(backingIndex);
     }
 
     /**

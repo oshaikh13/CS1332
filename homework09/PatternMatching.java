@@ -13,6 +13,8 @@ import java.util.HashMap;
  */
 public class PatternMatching {
 
+    // CREDIT: slides on notes' pseudeocode.
+
     /**
      * Knuth-Morris-Pratt (KMP) algorithm that relies on the failure table (also
      * called failure function). Works better with small alphabets.
@@ -279,12 +281,12 @@ public class PatternMatching {
                 + " or cannot have length 0");
         }
 
-        ArrayList<Integer> indicies = new ArrayList<Integer>();
 
-        if (pattern.length() > text.length()) {
-            return indicies;
+        if (text.length() < pattern.length()) {
+            return new ArrayList<Integer>();
         }
 
+        ArrayList<Integer> matches = new ArrayList<Integer>();
         long patternHash = 0;
         long textHash = 0;
 
@@ -308,18 +310,19 @@ public class PatternMatching {
                     j++;
                 }
                 if (j == pattern.length()) {
-                    indicies.add(i);
+                    matches.add(i);
                 }
             }
             i++;
             if (i <= text.length() - pattern.length()) {
                 char newLetter = text.charAt(i + pattern.length() - 1);
                 char oldLetter = text.charAt(i - 1);
+                System.out.println(multiplier);
                 textHash =  
                     BASE * (textHash - multiplier * oldLetter) + newLetter;
             }
         }
-        return indicies;
+        return matches;
 
     }
 

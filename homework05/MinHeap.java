@@ -173,16 +173,11 @@ public class MinHeap<T extends Comparable<? super T>> {
      */
     private void minHeapifyUp(int heapifyIdx) {
         int parent = parent(heapifyIdx);
-        int smallest = heapifyIdx;
 
         if (parent > 0 
             && backingArray[parent].compareTo(backingArray[heapifyIdx]) > 0) {
-            smallest = parent;
-        }
-
-        if (smallest != heapifyIdx) {
-            swap(heapifyIdx, smallest);
-            minHeapifyUp(smallest);
+            swap(heapifyIdx, parent);
+            minHeapifyUp(parent);
         }
     }
 
