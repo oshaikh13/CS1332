@@ -312,7 +312,7 @@ public class HashMap<K, V> {
         }
 
         MapEntry<K, V>[] oldTable = table;
-        table = new MapEntry<K,V>[length];
+        table = new MapEntry[length];
         int oldSize = size;
         for (int i = 0, j = 0; i < oldTable.length && j < oldSize; i++) {
 

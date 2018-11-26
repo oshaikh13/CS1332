@@ -317,7 +317,6 @@ public class PatternMatching {
             if (i <= text.length() - pattern.length()) {
                 char newLetter = text.charAt(i + pattern.length() - 1);
                 char oldLetter = text.charAt(i - 1);
-                System.out.println(multiplier);
                 textHash =  
                     BASE * (textHash - multiplier * oldLetter) + newLetter;
             }

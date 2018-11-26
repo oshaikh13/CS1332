@@ -218,7 +218,7 @@ public class GraphAlgorithms {
                     dists.put(neighboor.getVertex(), potentiallySmallerDist);
                     pq.offer(new VertexDistance<T>(neighboor.getVertex(), 
                         potentiallySmallerDist));
-                }
+                } 
             }
         }
 
@@ -270,15 +270,20 @@ public class GraphAlgorithms {
             throw new IllegalArgumentException("Graph cannot be null");
         }
 
+        if (graph.getVertices().size() - 1 > graph.getEdges().size()) {
+            return null;
+        }
+
         PriorityQueue<Edge<T>> pq = 
             new PriorityQueue<Edge<T>>(graph.getEdges());
+    
         DisjointSet<Vertex<T>> ds = 
             new DisjointSet<Vertex<T>>(graph.getVertices());
-            
+
         Set<Edge<T>> mst = new HashSet<Edge<T>>();
         int validMSTSize = 2 * (graph.getVertices().size() - 1);
 
-        while (!pq.isEmpty()) {
+        while (mst.size() < validMSTSize && !pq.isEmpty()) {
             Edge<T> e = pq.poll();
             if (!ds.find(e.getU()).equals(ds.find(e.getV()))) {
                 ds.union(e.getU(), e.getV());
