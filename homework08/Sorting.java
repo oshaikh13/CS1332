@@ -203,26 +203,18 @@ public class Sorting {
             && rightIndex < rightArray.length) {
             if (comparator.compare(leftArray[leftIndex], 
                 rightArray[rightIndex]) <= 0) {
-                arr[currentIndex] = leftArray[leftIndex];
-                leftIndex++;
-                currentIndex++;
+                arr[currentIndex++] = leftArray[leftIndex++];
             } else {
-                arr[currentIndex] = rightArray[rightIndex];
-                rightIndex++;
-                currentIndex++;
+                arr[currentIndex++] = rightArray[rightIndex++];
             }
         }
 
         while (leftIndex < leftArray.length) {
-            arr[currentIndex] = leftArray[leftIndex];
-            leftIndex++;
-            currentIndex++;
+            arr[currentIndex++] = leftArray[leftIndex++];
         }
 
         while (rightIndex < rightArray.length) {
-            arr[currentIndex] = rightArray[rightIndex];
-            rightIndex++;
-            currentIndex++;
+            arr[currentIndex++] = rightArray[rightIndex++];
         }        
         
     }
