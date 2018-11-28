@@ -195,7 +195,7 @@ public class GraphAlgorithms {
 
         Map<Vertex<T>, Integer> dists = new HashMap<>();
         PriorityQueue<VertexDistance<T>> pq = new PriorityQueue<>();
-        int finalized = 0;
+        HashSet<Vertex<T>> visitedSet = new HashSet<Vertex<T>>();
 
         for (Vertex<T> vertex: graph.getVertices()) {
             dists.put(vertex, vertex.equals(start) ? 0 : Integer.MAX_VALUE); 
@@ -203,11 +203,10 @@ public class GraphAlgorithms {
 
         pq.add(new VertexDistance<T>(start, 0));
 
-        while (!pq.isEmpty()) {
+        while (!pq.isEmpty() 
+            && visitedSet.size() < graph.getVertices().size()) {
             VertexDistance<T> smallest = pq.poll();
-            if (++finalized == graph.getVertices().size()) {
-                return dists;
-            }
+            visitedSet.add(smallest.getVertex());
             for (VertexDistance<T> neighboor
                 :adjList.get(smallest.getVertex())) {
 
