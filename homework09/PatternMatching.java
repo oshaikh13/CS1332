@@ -287,11 +287,9 @@ public class PatternMatching {
         }
 
         ArrayList<Integer> matches = new ArrayList<Integer>();
-        long patternHash = 0;
-        long textHash = 0;
 
-        textHash += text.charAt(pattern.length() - 1);
-        patternHash +=  pattern.charAt(pattern.length() - 1);
+        long textHash = text.charAt(pattern.length() - 1);
+        long patternHash =  pattern.charAt(pattern.length() - 1);
 
         long multiplier = 1;
         for (int i = pattern.length() - 2; i >= 0; i--) {

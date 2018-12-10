@@ -215,7 +215,7 @@ public class Sorting {
 
         while (rightIndex < rightArray.length) {
             arr[currentIndex++] = rightArray[rightIndex++];
-        }        
+        }
         
     }
 
